@@ -13,9 +13,9 @@ public interface AdsService {
     public List<Ads> getAds();
     public void addAds(CreateAds properties, MultipartFile image);
 
-    List<Comment> getComments(String adPk);
+    List<Comment> getComments(int id);
 
-    Comment addComments(String adPk, Comment comment);
+    Comment addComments(int id, Comment comment);
 
     FullAdds getFullAd(int id);
 
@@ -23,11 +23,13 @@ public interface AdsService {
 
     int updateAds(int id, CreateAds createAds);
 
-    Comment getComments(String adPk, int id);
+    //Comment getComments(int adId, int id);
 
-    Optional<Comment> deleteComments(String adPk, int id);
+    Optional<Comment> deleteComments(int adId, int id);
 
-    Optional<Comment> updateComments(String adPk, int id);
+    Optional<Comment> updateComments(int adId, int commentId);
 
     List<Ads> getAdsMe();
+
+    int updateAdsImage(int id, MultipartFile image);
 }
