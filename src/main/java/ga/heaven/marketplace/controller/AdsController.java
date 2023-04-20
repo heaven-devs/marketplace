@@ -33,7 +33,7 @@ public class AdsController {
     // --------------------------------------------------------------------------------------
 
     // Добавить объявление
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> addAds(@RequestBody CreateAds properties, @RequestBody MultipartFile image) {
         adsService.addAds(properties, image);
         return ResponseEntity.status(HttpStatus.CREATED).build();
