@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.service.impl;
 
-import ga.heaven.marketplace.dto.SetPasswordDto;
-import ga.heaven.marketplace.dto.UserDto;
+import ga.heaven.marketplace.dto.NewPassword;
+import ga.heaven.marketplace.dto.User;
 import ga.heaven.marketplace.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,22 +10,22 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public UserDto getCurrentUser() {
+    public User getCurrentUser() {
         return null;
     }
 
     @Override
-    public UserDto updateUser(UserDto user) {
+    public User updateUser(User user) {
         return null;
     }
 
     @Override
-    public UserDto setUserPassword(SetPasswordDto passwordDto) {
+    public User setUserPassword(NewPassword newPassword) {
         return null;
     }
 
     @Override
-    public UserDto loadUserImage(MultipartFile image) {
+    public User loadUserImage(MultipartFile image) {
         return null;
     }
 }
