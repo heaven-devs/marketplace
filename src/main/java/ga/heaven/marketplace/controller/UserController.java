@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.controller;
 
-import ga.heaven.marketplace.dto.SetPasswordDto;
-import ga.heaven.marketplace.dto.UserDto;
+import ga.heaven.marketplace.dto.NewPassword;
+import ga.heaven.marketplace.dto.User;
 import ga.heaven.marketplace.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,32 +29,32 @@ public class UserController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Пользователь найден",
+                            description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = UserDto.class)
+                                    schema = @Schema(implementation = User.class)
                             )
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Пользователь не авторизован (unauthorized)",
+                            description = "Unauthorized",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Доступ запрещен (forbidden)",
+                            description = "Forbidden",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Пользователь не найден (not found)",
+                            description = "Not Found",
                             content = @Content()
                     )
             }
     )
     @GetMapping("/me")
     public ResponseEntity<?> getUser() {
-        UserDto user = userService.getCurrentUser();
+        User user = userService.getCurrentUser();
         if (null == user) {
             return ResponseEntity.notFound().build();
         }
@@ -67,41 +67,41 @@ public class UserController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Пользователь обнавлен",
+                            description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = UserDto.class)
+                                    schema = @Schema(implementation = User.class)
                             )
                     ),
                     @ApiResponse(
                             responseCode = "204",
-                            description = "Пустой запрос (no content)",
+                            description = "No Content",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Пользователь не авторизован (unauthorized)",
+                            description = "Unauthorized",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Доступ запрещен (forbidden)",
+                            description = "Forbidden",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Пользователь не найден (not found)",
+                            description = "Not Found",
                             content = @Content()
                     )
             }
     )
     @PatchMapping("/me")
-    public ResponseEntity<?> updateUser(@RequestBody UserDto user) {
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
         if (null == user) {
             return ResponseEntity.noContent().build();
         }
 
-        UserDto editedUser = userService.updateUser(user);
+        User editedUser = userService.updateUser(user);
         if (null == editedUser) {
             return ResponseEntity.notFound().build();
         }
@@ -115,35 +115,34 @@ public class UserController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Пароль обновлен",
+                            description = "OK",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Пользователь не авторизован (unauthorized)",
+                            description = "Unauthorized",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Доступ запрещен (forbidden)",
+                            description = "Forbidden",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Пользователь не найден (not found)",
+                            description = "Not Found",
                             content = @Content()
                     )
             }
     )
     @PostMapping("/set_password")
-    public ResponseEntity<?> setUserPassword(@RequestBody SetPasswordDto passwordDto) {
-        UserDto editedUser = userService.setUserPassword(passwordDto);
+    public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword) {
+        User editedUser = userService.setUserPassword(newPassword);
         if (null == editedUser) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();
     }
-
 
     @Operation(
             tags = "Пользователи",
@@ -151,19 +150,19 @@ public class UserController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Картинка загружена",
+                            description = "OK",
                             content = @Content()
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Пользователь не найден (not found)",
+                            description = "Not Found",
                             content = @Content()
                     )
             }
     )
     @PatchMapping("/me/image")
     public ResponseEntity<?> loadUserImage(@RequestBody MultipartFile image) {
-        UserDto editedUser = userService.loadUserImage(image);
+        User editedUser = userService.loadUserImage(image);
         if (null == editedUser) {
             return ResponseEntity.notFound().build();
         }
