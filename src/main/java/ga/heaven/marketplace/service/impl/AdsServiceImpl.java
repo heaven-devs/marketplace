@@ -23,12 +23,12 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public List<Comment> getComments(String adPk) {
+    public List<Comment> getComments(int id) {
         return null;
     }
 
     @Override
-    public Comment addComments(String adPk, Comment comment) {
+    public Comment addComments(int id, Comment comment) {
         return null;
     }
 
@@ -47,23 +47,28 @@ public class AdsServiceImpl implements AdsService {
         return 0;
     }
 
-    @Override
-    public Comment getComments(String adPk, int id) {
+    /*@Override
+    public Comment getComments(int adId, int id) {
         return null;
-    }
+    }*/
 
     @Override
-    public Optional<Comment> deleteComments(String adPk, int id) {
+    public Optional<Comment> deleteComments(int adId, int id) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<Comment> updateComments(String adPk, int id) {
+    public Optional<Comment> updateComments(int adId, int commentId) {
         return Optional.empty();
     }
 
     @Override
     public List<Ads> getAdsMe() {
         return null;
+    }
+
+    @Override
+    public int updateAdsImage(int id, MultipartFile image) {
+        return 0;
     }
 }
