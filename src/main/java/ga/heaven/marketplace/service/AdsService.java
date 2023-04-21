@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AdsService {
-    public List<Ads> getAds();
-    public void addAds(CreateAds properties, MultipartFile image);
+    List<Ads> getAds();
+    void addAds(CreateAds properties, MultipartFile image);
 
     List<Comment> getComments(int id);
 
@@ -22,8 +22,6 @@ public interface AdsService {
     int removeAds(int id);
 
     int updateAds(int id, CreateAds createAds);
-
-    //Comment getComments(int adId, int id);
 
     Optional<Comment> deleteComments(int adId, int id);
 

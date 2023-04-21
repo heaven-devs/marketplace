@@ -47,11 +47,6 @@ public class AdsServiceImpl implements AdsService {
         return 0;
     }
 
-    /*@Override
-    public Comment getComments(int adId, int id) {
-        return null;
-    }*/
-
     @Override
     public Optional<Comment> deleteComments(int adId, int id) {
         return Optional.empty();
