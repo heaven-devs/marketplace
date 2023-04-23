@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.*;
-import ga.heaven.marketplace.service.impl.AdsServiceImpl;
+import ga.heaven.marketplace.service.AdsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,12 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "http://marketplace.heaven.ga")
 @RequestMapping("/ads")
 public class AdsController {
-    private final AdsServiceImpl adsService;
+    private final AdsService adsService;
 
-    public AdsController(AdsServiceImpl adsService) {
+    public AdsController(AdsService adsService) {
         this.adsService = adsService;
     }
 
@@ -76,7 +76,7 @@ public class AdsController {
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> addAds(@RequestBody CreateAds properties, @RequestBody MultipartFile image) {
+    public ResponseEntity<?> addAds(@RequestPart CreateAds properties, @RequestPart MultipartFile image) {
         adsService.addAds(properties, image);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -218,7 +218,7 @@ public class AdsController {
             }
     )
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestBody MultipartFile image) {
+    public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image) {
         adsService.updateAdsImage(id, image);
         return ResponseEntity.ok(null);
     }
