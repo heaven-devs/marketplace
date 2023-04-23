@@ -2,7 +2,7 @@ package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.NewPassword;
 import ga.heaven.marketplace.dto.User;
-import ga.heaven.marketplace.service.impl.UserServiceImpl;
+import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,14 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin("http://locallhost:3000")
+@CrossOrigin("http://marketplace.heaven.ga")
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
-    public UserController(UserServiceImpl userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -161,7 +161,7 @@ public class UserController {
             }
     )
     @PatchMapping("/me/image")
-    public ResponseEntity<?> loadUserImage(@RequestBody MultipartFile image) {
+    public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image) {
         User editedUser = userService.loadUserImage(image);
         if (null == editedUser) {
             return ResponseEntity.notFound().build();
