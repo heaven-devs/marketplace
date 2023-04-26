@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.NewPassword;
-import ga.heaven.marketplace.dto.User;
+import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,7 +32,7 @@ public class UserController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = User.class)
+                                    schema = @Schema(implementation = UserDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -54,11 +54,11 @@ public class UserController {
     )
     @GetMapping("/me")
     public ResponseEntity<?> getUser() {
-        User user = userService.getCurrentUser();
-        if (null == user) {
+        UserDto userDto = userService.getCurrentUser();
+        if (null == userDto) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userDto);
     }
 
     @Operation(
@@ -70,7 +70,7 @@ public class UserController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = User.class)
+                                    schema = @Schema(implementation = UserDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -96,17 +96,17 @@ public class UserController {
             }
     )
     @PatchMapping("/me")
-    public ResponseEntity<?> updateUser(@RequestBody User user) {
-        if (null == user) {
+    public ResponseEntity<?> updateUser(@RequestBody UserDto userDto) {
+        if (null == userDto) {
             return ResponseEntity.noContent().build();
         }
 
-        User editedUser = userService.updateUser(user);
-        if (null == editedUser) {
+        UserDto editedUserDto = userService.updateUser(userDto);
+        if (null == editedUserDto) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(editedUser);
+        return ResponseEntity.ok(editedUserDto);
     }
 
     @Operation(
@@ -137,8 +137,8 @@ public class UserController {
     )
     @PostMapping("/set_password")
     public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword) {
-        User editedUser = userService.setUserPassword(newPassword);
-        if (null == editedUser) {
+        UserDto editedUserDto = userService.setUserPassword(newPassword);
+        if (null == editedUserDto) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();
@@ -162,8 +162,8 @@ public class UserController {
     )
     @PatchMapping("/me/image")
     public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image) {
-        User editedUser = userService.loadUserImage(image);
-        if (null == editedUser) {
+        UserDto editedUserDto = userService.loadUserImage(image);
+        if (null == editedUserDto) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();

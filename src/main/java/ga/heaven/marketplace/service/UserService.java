@@ -1,16 +1,16 @@
 package ga.heaven.marketplace.service;
 
 import ga.heaven.marketplace.dto.NewPassword;
-import ga.heaven.marketplace.dto.User;
+import ga.heaven.marketplace.dto.UserDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
-    User getCurrentUser();
+    UserDto getCurrentUser();
 
-    User updateUser(User user);
+    UserDto updateUser(UserDto userDto);
 
-    User setUserPassword(NewPassword newPassword);
+    UserDto setUserPassword(NewPassword newPassword);
 
-    User loadUserImage(MultipartFile image);
+    UserDto loadUserImage(MultipartFile image);
 }
