@@ -10,15 +10,15 @@ create table if not exists users
     last_name   varchar(40),
     phone       varchar(12),
     email       varchar(40),
-    role        varchar(5),
+    role        int,
     image       text
     );
 
 insert into users (id, username, password, first_name, last_name, phone, email, role, image)
-    values (1, 'Telion', 'psd', 'Sergei', 'Tarasov', '+78889992211', 'email@mail.ru', 'ADMIN', 'image_path\telion.jpg');
+    values (1, 'Telion', 'psd', 'Sergei', 'Tarasov', '+78889992211', 'email@mail.ru', 0, 'image_path\telion.jpg');
 insert into users (id, username, password, first_name, last_name, phone, email, role, image)
-    values (2, 'Venik', 'pswd', 'Вениамин', 'Петров', '+73339992211', 'venik@google.com', 'USER', 'image_path\venik.jpg');
+    values (2, 'Venik', 'pswd', 'Вениамин', 'Петров', '+73339992211', 'venik@google.com', 1, 'image_path\venik.jpg');
 insert into users (id, username, password, first_name, last_name, phone, email, role, image)
-    values (3, 'Kuznec', 'pas', 'Антон', 'Кузнецов', '+71119992211', 'kuznec@yandex.ru', 'USER', 'image_path\kuznec.png');
+    values (3, 'Kuznec', 'pas', 'Антон', 'Кузнецов', '+71119992211', 'kuznec@yandex.ru', 1, 'image_path\kuznec.png');
 
 
