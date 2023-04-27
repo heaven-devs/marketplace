@@ -54,11 +54,8 @@ public class UserController {
     )
     @GetMapping("/me")
     public ResponseEntity<?> getUser() {
-        UserDto userDto = userService.getCurrentUser();
-        if (null == userDto) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(userDto);
+        System.out.println("getUser");
+        return userService.getCurrentUser();
     }
 
     @Operation(
@@ -97,16 +94,8 @@ public class UserController {
     )
     @PatchMapping("/me")
     public ResponseEntity<?> updateUser(@RequestBody UserDto userDto) {
-        if (null == userDto) {
-            return ResponseEntity.noContent().build();
-        }
-
-        UserDto editedUserDto = userService.updateUser(userDto);
-        if (null == editedUserDto) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(editedUserDto);
+        System.out.println("updateUser");
+        return userService.updateUser(userDto);
     }
 
     @Operation(
@@ -137,11 +126,8 @@ public class UserController {
     )
     @PostMapping("/set_password")
     public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword) {
-        UserDto editedUserDto = userService.setUserPassword(newPassword);
-        if (null == editedUserDto) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().build();
+        System.out.println("setUserPassword");
+        return userService.setUserPassword(newPassword);
     }
 
     @Operation(
@@ -162,11 +148,8 @@ public class UserController {
     )
     @PatchMapping("/me/image")
     public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image) {
-        UserDto editedUserDto = userService.loadUserImage(image);
-        if (null == editedUserDto) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().build();
+        System.out.println("loadUserImage");
+        return userService.loadUserImage(image);
     }
 
 }
