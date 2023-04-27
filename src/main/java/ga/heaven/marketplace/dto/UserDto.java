@@ -3,7 +3,7 @@ package ga.heaven.marketplace.dto;
 import lombok.Data;
 
 @Data
-public class User {
+public class UserDto {
     private long id;
     private String email;
     private String firstName;
