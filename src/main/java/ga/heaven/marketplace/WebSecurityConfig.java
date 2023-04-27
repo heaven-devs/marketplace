@@ -49,6 +49,7 @@ public class WebSecurityConfig {
                 .cors()
                 .and()
                 .httpBasic(withDefaults());
+        http.headers().frameOptions().disable();
         return http.build();
     }
     
