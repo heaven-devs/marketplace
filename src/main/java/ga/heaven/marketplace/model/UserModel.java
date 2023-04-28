@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "mp_users")
 @Data
 public class UserModel {
 

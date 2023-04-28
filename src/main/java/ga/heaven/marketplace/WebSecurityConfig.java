@@ -38,7 +38,10 @@ public class WebSecurityConfig {
     
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf()
+        http
+                .headers().frameOptions().sameOrigin()
+                .and()
+                .csrf()
                 .disable()
                 .authorizeHttpRequests(
                         (authorization) ->
@@ -48,8 +51,9 @@ public class WebSecurityConfig {
                 )
                 .cors()
                 .and()
-                .httpBasic(withDefaults());
-        http.headers().frameOptions().disable();
+                .httpBasic(withDefaults())
+        ;
+//        http.headers().frameOptions().disable();
         return http.build();
     }
     
