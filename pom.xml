@@ -73,6 +73,12 @@
             <version>${org.mapstruct.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.21.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

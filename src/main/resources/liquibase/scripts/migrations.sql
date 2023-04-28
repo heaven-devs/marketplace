@@ -22,3 +22,15 @@ values (2, 'Venik', '$2a$10$FIruINDpbVd0WvOz51xCsOLunxMjp..KwrZ8R02xM2NNaor5R3zr
 insert into "mp_users" (id, username, password, first_name, last_name, phone, email, role, image, content_type)
 values (3, 'Kuznec', '$2a$10$8AIWSRUhWxr/YwYPIwj2a.TghRfMJ2M/Sm05wO5s6VF7FC.otqOuG', 'Антон', 'Кузнецов', '+71119992211', 'kuznec@yandex.ru', 0, 'image', 'contentType'); --pas
 
+-- changeset alrepin:1
+create table if not exists "mp_ads"
+(
+    "id"    BIGINT auto_increment
+        primary key,
+    "image" text,
+    "price" INTEGER not null,
+    "title" CHARACTER VARYING(255)
+);
+
+INSERT INTO "mp_ads" ("image", "price", "title")
+VALUES ('image', 5000, 'Good');
