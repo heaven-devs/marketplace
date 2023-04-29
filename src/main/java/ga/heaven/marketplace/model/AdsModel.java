@@ -14,8 +14,9 @@ public class AdsModel {
     private String image; // ссылка на картинку объявления
     private Integer price;    // цена объявления
     private String title; // заголовок объявления
+    private String contentType; // тип файла image
 
-    // Посмотреть название Entity у Сергея
-    /*@ManyToOne
-    private UserModel user;*/
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserModel user;
 }

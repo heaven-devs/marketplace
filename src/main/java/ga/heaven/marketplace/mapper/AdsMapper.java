@@ -11,6 +11,6 @@ public interface AdsMapper {
     AdsMapper INSTANCE = Mappers.getMapper( AdsMapper.class );
 
     @Mapping(source = "id", target = "pk")
-    //@Mapping(target = "pk", expression = user.getId()) // Узнать у Сергея название Entity для User
+    @Mapping(target = "pk", expression = "java(user.getId())")
     Ads AdsModelToAds(AdsModel adsModel);
 }

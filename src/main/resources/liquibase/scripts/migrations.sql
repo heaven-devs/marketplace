@@ -25,14 +25,13 @@ values (3, 'Kuznec', '$2a$10$8AIWSRUhWxr/YwYPIwj2a.TghRfMJ2M/Sm05wO5s6VF7FC.otqO
 -- changeset alrepin:1
 create table if not exists "mp_ads"
 (
-    "id"    BIGINT auto_increment
-        primary key,
-    "image" text,
-    "price" INTEGER not null,
-    "title" CHARACTER VARYING(255)
+    id    BIGINT auto_increment primary key,
+    image CHARACTER VARYING(255),
+    price INTEGER not null,
+    title CHARACTER VARYING(255)
 );
 
-INSERT INTO "mp_ads" ("image", "price", "title")
+INSERT INTO "mp_ads" (image, price, title)
 VALUES ('image', 5000, 'Good');
 
 -- changeset alrepin:2
@@ -55,3 +54,25 @@ INSERT INTO "mp_comments" ("id", "created_at", "text", "ads_id", "user_id")
 VALUES (2, '2023-04-28 07:46:29.000000', 'second comment', 1, 1);
 INSERT INTO "mp_comments" ("id", "created_at", "text", "ads_id", "user_id")
 VALUES (3, '2023-04-28 08:46:29.000000', 'third comment', 1, 1);
+
+
+-- changeset alexTuraev:1
+ALTER TABLE mp_ads
+    ADD COLUMN content_type CHARACTER VARYING(30);
+ALTER TABLE mp_ads
+    ADD COLUMN user_id BIGINT;
+ALTER TABLE mp_ads
+    ADD CONSTRAINT user_id_constraint FOREIGN KEY ("user_id") REFERENCES mp_users ("id") ON DELETE CASCADE;
+
+-- changeset alexTuraev:2
+INSERT INTO mp_ads (image, price, title, content_type, user_id)
+    VALUES ('path1', 15000, 'product2', 'content_type', 1);
+INSERT INTO mp_ads (image, price, title, content_type, user_id)
+    VALUES ('path2', 10000, 'product3', 'content_type', 1);
+
+INSERT INTO mp_ads (image, price, title, content_type, user_id)
+    VALUES ('path3', 10000, 'product4', 'content_type', 2);
+INSERT INTO mp_ads (image, price, title, content_type, user_id)
+    VALUES ('path4', 11000, 'product5', 'content_type', 2);
+INSERT INTO mp_ads (image, price, title, content_type, user_id)
+    VALUES ('path5', 12000, 'product6', 'content_type', 2);
