@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.service.impl;
 
 import ga.heaven.marketplace.dto.Ads;
-import ga.heaven.marketplace.dto.Comment;
+import ga.heaven.marketplace.dto.CommentDto;
 import ga.heaven.marketplace.dto.CreateAds;
 import ga.heaven.marketplace.dto.FullAdds;
 import ga.heaven.marketplace.service.AdsService;
@@ -23,12 +23,12 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public List<Comment> getComments(int id) {
+    public List<CommentDto> getComments(int id) {
         return null;
     }
 
     @Override
-    public Comment addComments(int id, Comment comment) {
+    public CommentDto addComments(int id, CommentDto comment) {
         return null;
     }
 
@@ -48,12 +48,12 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Optional<Comment> deleteComments(int adId, int id) {
+    public Optional<CommentDto> deleteComments(int adId, int id) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<Comment> updateComments(int adId, int commentId) {
+    public Optional<CommentDto> updateComments(int adId, int commentId) {
         return Optional.empty();
     }
 

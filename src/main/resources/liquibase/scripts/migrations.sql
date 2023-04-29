@@ -34,3 +34,24 @@ create table if not exists "mp_ads"
 
 INSERT INTO "mp_ads" ("image", "price", "title")
 VALUES ('image', 5000, 'Good');
+
+-- changeset alrepin:2
+create table "mp_comments"
+(
+    "id"         BIGINT auto_increment
+        primary key,
+    "created_at" TIMESTAMP,
+    "text"       CHARACTER VARYING(255),
+    "ads_id"     BIGINT,
+    "user_id"    BIGINT,
+    constraint "FK3bcj3l17xruibbviv9g2n57s6"
+        foreign key ("ads_id") references "mp_ads",
+    constraint "FKm1uun165bcw52vv4krmem666a"
+        foreign key ("user_id") references "mp_users"
+);
+INSERT INTO "mp_comments" ("id", "created_at", "text", "ads_id", "user_id")
+VALUES ('1, 2023-04-28 06:46:29.000000', 'first comment', 1, 1);
+INSERT INTO "mp_comments" ("id", "created_at", "text", "ads_id", "user_id")
+VALUES ('1, 2023-04-28 06:46:29.000000', 'first comment', 1, 1);
+INSERT INTO "mp_comments" ("id", "created_at", "text", "ads_id", "user_id")
+VALUES ('1, 2023-04-28 06:46:29.000000', 'first comment', 1, 1);

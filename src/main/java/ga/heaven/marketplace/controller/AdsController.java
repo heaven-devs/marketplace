@@ -244,7 +244,7 @@ public class AdsController {
     )
     @GetMapping("{id}/comments")
     public ResponseEntity<?> getComments(@PathVariable int id) {
-        List<Comment> comments = adsService.getComments(id);
+        List<CommentDto> comments = adsService.getComments(id);
         return ResponseEntity.ok(comments);
     }
 
@@ -257,7 +257,7 @@ public class AdsController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Comment.class)
+                                    schema = @Schema(implementation = CommentDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -278,8 +278,8 @@ public class AdsController {
             }
     )
     @PostMapping(value = "{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addComments(@PathVariable int id, @RequestBody Comment comment) {
-        Comment res = adsService.addComments(id, comment);
+    public ResponseEntity<?> addComments(@PathVariable int id, @RequestBody CommentDto comment) {
+        CommentDto res = adsService.addComments(id, comment);
         return ResponseEntity.ok(res);
     }
 
@@ -311,7 +311,7 @@ public class AdsController {
     )
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<?> deleteComments(@PathVariable int adId, @PathVariable int commentId) {
-        Comment comment = adsService.deleteComments(adId, commentId).orElse(null);
+        CommentDto comment = adsService.deleteComments(adId, commentId).orElse(null);
         return ResponseEntity.ok(comment);
     }
 
@@ -324,7 +324,7 @@ public class AdsController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Comment.class)
+                                    schema = @Schema(implementation = CommentDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -346,7 +346,7 @@ public class AdsController {
     )
     @PatchMapping("{adId}/comments/{commentId}")
     public ResponseEntity<?> updateComments(@PathVariable int adId, @PathVariable int commentId) {
-        Comment comment = adsService.updateComments(adId, commentId).orElse(null);
+        CommentDto comment = adsService.updateComments(adId, commentId).orElse(null);
         return ResponseEntity.ok(null);
     }
 
