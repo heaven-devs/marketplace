@@ -10,8 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -243,8 +245,11 @@ public class AdsController {
             }
     )
     @GetMapping("{id}/comments")
-    public ResponseEntity<?> getComments(@PathVariable int id) {
-        List<CommentDto> comments = adsService.getComments(id);
+    public ResponseEntity<?> getComments(@PathVariable Integer id) {
+        ResponseWrapperComment comments = adsService.getComments(id.longValue());
+        if (null == comments) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(comments);
     }
 
@@ -278,8 +283,8 @@ public class AdsController {
             }
     )
     @PostMapping(value = "{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addComments(@PathVariable int id, @RequestBody CommentDto comment) {
-        CommentDto res = adsService.addComments(id, comment);
+    public ResponseEntity<?> addComments(@PathVariable Integer id, @RequestBody CommentDto comment, Authentication authentication) {
+        CommentDto res = adsService.addComments(id, comment, authentication.getName());
         return ResponseEntity.ok(res);
     }
 
