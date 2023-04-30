@@ -1,9 +1,6 @@
 package ga.heaven.marketplace.service;
 
-import ga.heaven.marketplace.dto.Ads;
-import ga.heaven.marketplace.dto.Comment;
-import ga.heaven.marketplace.dto.CreateAds;
-import ga.heaven.marketplace.dto.FullAdds;
+import ga.heaven.marketplace.dto.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -12,20 +9,20 @@ import java.util.Optional;
 public interface AdsService {
     List<Ads> getAds();
     void addAds(CreateAds properties, MultipartFile image);
-
-    List<Comment> getComments(int id);
-
-    Comment addComments(int id, Comment comment);
-
+    
+    ResponseWrapperComment getComments(Long id);
+    
+    CommentDto addComments(Integer id, CommentDto comment, String username);
+    
     FullAdds getFullAd(int id);
 
     int removeAds(int id);
 
     int updateAds(int id, CreateAds createAds);
 
-    Optional<Comment> deleteComments(int adId, int id);
+    Optional<CommentDto> deleteComments(int adId, int id);
 
-    Optional<Comment> updateComments(int adId, int commentId);
+    Optional<CommentDto> updateComments(int adId, int commentId);
 
     List<Ads> getAdsMe();
 

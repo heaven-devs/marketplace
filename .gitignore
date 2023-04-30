@@ -41,3 +41,8 @@ build/
 
 ### VS Code ###
 .vscode/
+/git-set-committer-to-author.sh
+/heaven-devs.sh
+/alrepin.sh
+/src/main/resources/db/marketplace.heaven.db.trace.db
+/src/main/resources/db/marketplace.heaven.db.mv.db

@@ -10,8 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -243,8 +245,11 @@ public class AdsController {
             }
     )
     @GetMapping("{id}/comments")
-    public ResponseEntity<?> getComments(@PathVariable int id) {
-        List<Comment> comments = adsService.getComments(id);
+    public ResponseEntity<?> getComments(@PathVariable Integer id) {
+        ResponseWrapperComment comments = adsService.getComments(id.longValue());
+        if (null == comments) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(comments);
     }
 
@@ -257,7 +262,7 @@ public class AdsController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Comment.class)
+                                    schema = @Schema(implementation = CommentDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -278,8 +283,8 @@ public class AdsController {
             }
     )
     @PostMapping(value = "{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addComments(@PathVariable int id, @RequestBody Comment comment) {
-        Comment res = adsService.addComments(id, comment);
+    public ResponseEntity<?> addComments(@PathVariable Integer id, @RequestBody CommentDto comment, Authentication authentication) {
+        CommentDto res = adsService.addComments(id, comment, authentication.getName());
         return ResponseEntity.ok(res);
     }
 
@@ -311,7 +316,7 @@ public class AdsController {
     )
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<?> deleteComments(@PathVariable int adId, @PathVariable int commentId) {
-        Comment comment = adsService.deleteComments(adId, commentId).orElse(null);
+        CommentDto comment = adsService.deleteComments(adId, commentId).orElse(null);
         return ResponseEntity.ok(comment);
     }
 
@@ -324,7 +329,7 @@ public class AdsController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Comment.class)
+                                    schema = @Schema(implementation = CommentDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -346,7 +351,7 @@ public class AdsController {
     )
     @PatchMapping("{adId}/comments/{commentId}")
     public ResponseEntity<?> updateComments(@PathVariable int adId, @PathVariable int commentId) {
-        Comment comment = adsService.updateComments(adId, commentId).orElse(null);
+        CommentDto comment = adsService.updateComments(adId, commentId).orElse(null);
         return ResponseEntity.ok(null);
     }
 
