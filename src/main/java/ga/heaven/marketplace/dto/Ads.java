@@ -10,4 +10,5 @@ public class Ads {
     private long pk;       // id объявления
     private int price;    // цена объявления
     private String title; // заголовок объявления
+    private String contentType; // тип файла image
 }

@@ -18,7 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = "http://marketplace.heaven.ga")
+//@CrossOrigin(value = "http://marketplace.heaven.ga")
+@CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/ads")
 public class AdsController {
     private final AdsService adsService;

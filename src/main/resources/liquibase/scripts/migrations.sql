@@ -76,3 +76,8 @@ INSERT INTO mp_ads (image, price, title, content_type, user_id)
     VALUES ('path4', 11000, 'product5', 'content_type', 2);
 INSERT INTO mp_ads (image, price, title, content_type, user_id)
     VALUES ('path5', 12000, 'product6', 'content_type', 2);
+
+-- changeset alexTuraev:3
+UPDATE mp_ads
+    SET user_id = 1
+    WHERE user_id is null;

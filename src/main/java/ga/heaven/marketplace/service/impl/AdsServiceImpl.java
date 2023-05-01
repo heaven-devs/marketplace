@@ -1,6 +1,7 @@
 package ga.heaven.marketplace.service.impl;
 
 import ga.heaven.marketplace.dto.*;
+import ga.heaven.marketplace.mapper.AdsMapper;
 import ga.heaven.marketplace.mapper.CommentMapper;
 import ga.heaven.marketplace.model.AdsModel;
 import ga.heaven.marketplace.model.CommentModel;
@@ -43,7 +44,12 @@ public class AdsServiceImpl implements AdsService {
     
     
     public List<Ads> getAds() {
-        List<Ads> ads = new ArrayList<>();
+        //List<Ads> ads = new ArrayList<>();
+         List<AdsModel> adsModels = adsRepository.findAll();
+        List<Ads> ads = adsModels.stream().map(a-> {
+            //return AdsMapper.INSTANCE.adsModelToAds(a);
+            return AdsMapper.adsModelToAds(a);
+        }).collect(Collectors.toList());
         return ads;
     }
     

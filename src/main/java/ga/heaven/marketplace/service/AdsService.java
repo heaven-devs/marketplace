@@ -1,6 +1,7 @@
 package ga.heaven.marketplace.service;
 
 import ga.heaven.marketplace.dto.*;
+import ga.heaven.marketplace.model.AdsModel;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
