@@ -81,3 +81,7 @@ INSERT INTO mp_ads (image, price, title, content_type, user_id)
 UPDATE mp_ads
     SET user_id = 1
     WHERE user_id is null;
+
+-- changeset alexTuraev:4
+ALTER TABLE mp_ads
+    ADD COLUMN description text;

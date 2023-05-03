@@ -15,6 +15,7 @@ public class AdsModel {
     private int price;    // цена объявления
     private String title; // заголовок объявления
     private String contentType; // тип файла image
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

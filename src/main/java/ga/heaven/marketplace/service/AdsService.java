@@ -17,7 +17,7 @@ public interface AdsService {
     
     FullAdds getFullAd(long id);
 
-    int removeAds(int id);
+    int removeAds(long id);
 
     int updateAds(int id, CreateAds createAds);
 

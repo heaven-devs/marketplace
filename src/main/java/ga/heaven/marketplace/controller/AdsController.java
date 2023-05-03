@@ -79,7 +79,9 @@ public class AdsController {
                     )
             }
     )
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    // РЕАЛИЗОВАНО ЧАСТИЧНО
+    @PostMapping(name="/newAd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> addAds(@RequestPart CreateAds properties, @RequestPart MultipartFile image) {
         adsService.addAds(properties, image);
@@ -105,10 +107,15 @@ public class AdsController {
                     )
             }
     )
+    // РЕАЛИЗОВАНО
     @GetMapping("/{id}")
     public ResponseEntity<FullAdds> getFullAd(@PathVariable long id) {
         FullAdds fullAdds = adsService.getFullAd(id);
-        return ResponseEntity.ok(fullAdds);
+        if (fullAdds == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(fullAdds);
+        }
     }
 
     @Operation(
@@ -133,7 +140,7 @@ public class AdsController {
             }
     )
     @DeleteMapping("{id}")
-    public ResponseEntity<?> removeAds(@PathVariable int id) {
+    public ResponseEntity<?> removeAds(@PathVariable long id) {
         adsService.removeAds(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

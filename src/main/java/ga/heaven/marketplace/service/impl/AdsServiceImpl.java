@@ -54,6 +54,9 @@ public class AdsServiceImpl implements AdsService {
     }
     
     public void addAds(CreateAds properties, MultipartFile image) {
+        AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(properties);
+        // ДОБАВИТЬ ЛОГИКУ ПО IMAGE и по USER
+        adsRepository.save(adsModel);
     }
     
     
@@ -102,8 +105,13 @@ public class AdsServiceImpl implements AdsService {
     }
     
     @Override
-    public int removeAds(int id) {
-        return 0;
+    public int removeAds(long id) {
+        if (adsRepository.findById(id).isEmpty()) {
+            return 204; // не найден
+        } else {
+            adsRepository.deleteById(id);
+            return 0; // запись удалена
+        }
     }
     
     @Override
