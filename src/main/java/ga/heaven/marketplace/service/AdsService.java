@@ -15,7 +15,7 @@ public interface AdsService {
     
     CommentDto addComments(Integer id, CommentDto comment, String username);
     
-    FullAdds getFullAd(int id);
+    FullAdds getFullAd(long id);
 
     int removeAds(int id);
 

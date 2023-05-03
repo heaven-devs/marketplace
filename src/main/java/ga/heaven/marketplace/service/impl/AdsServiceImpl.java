@@ -96,8 +96,9 @@ public class AdsServiceImpl implements AdsService {
     }
     
     @Override
-    public FullAdds getFullAd(int id) {
-        return null;
+    public FullAdds getFullAd(long id) {
+        AdsModel adsModel = adsRepository.findById(id).orElse(null);
+        return AdsMapper.adsModelToFullAdds(adsModel);
     }
     
     @Override

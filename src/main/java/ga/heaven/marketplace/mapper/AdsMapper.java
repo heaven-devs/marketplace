@@ -1,6 +1,7 @@
 package ga.heaven.marketplace.mapper;
 
 import ga.heaven.marketplace.dto.Ads;
+import ga.heaven.marketplace.dto.FullAdds;
 import ga.heaven.marketplace.model.AdsModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,5 +25,22 @@ public class AdsMapper {
         ads.setTitle(adsModel.getTitle());
         ads.setContentType(adsModel.getContentType());
         return ads;
+    }
+
+    public static FullAdds adsModelToFullAdds(AdsModel adsModel) {
+        if (adsModel == null) {
+            return null;
+        }
+        FullAdds fullAdds = new FullAdds();
+        fullAdds.setPk(adsModel.getId());
+        fullAdds.setAuthorFirstName(adsModel.getUser().getFirstName());
+        fullAdds.setAuthorLastName(adsModel.getUser().getLastName());
+        //fullAdds.setDescription();
+        fullAdds.setEmail(adsModel.getUser().getEmail());
+        fullAdds.setImage(adsModel.getImage());
+        fullAdds.setPhone(adsModel.getUser().getPhone());
+        fullAdds.setPrice((adsModel.getPrice()));
+        fullAdds.setTitle(adsModel.getTitle());
+        return fullAdds;
     }
 }

@@ -19,8 +19,9 @@ import java.util.List;
 
 @RestController
 //@CrossOrigin(value = "http://marketplace.heaven.ga")
-@CrossOrigin(value = "http://localhost:3000")
-@RequestMapping("/ads")
+//@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
+@RequestMapping("ads")
 public class AdsController {
     private final AdsService adsService;
 
@@ -42,6 +43,7 @@ public class AdsController {
                     )
             }
     )
+    // РЕАЛИЗОВАНО
     @GetMapping
     public ResponseEntity<?> getAds() {
         List<Ads> ads = adsService.getAds();
@@ -104,7 +106,7 @@ public class AdsController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<?> getFullAd(@PathVariable int id) {
+    public ResponseEntity<FullAdds> getFullAd(@PathVariable long id) {
         FullAdds fullAdds = adsService.getFullAd(id);
         return ResponseEntity.ok(fullAdds);
     }
