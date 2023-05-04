@@ -44,12 +44,14 @@ public class AdsController {
                     )
             }
     )
+    // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО
     @GetMapping
     public ResponseEntity<?> getAds() {
         List<Ads> ads = adsService.getAds();
         return ResponseEntity.ok(ads);
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -81,13 +83,15 @@ public class AdsController {
             }
     )
 
+    // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО ЧАСТИЧНО
     @PostMapping(name="/newAd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    //    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> addAds(@RequestPart CreateAds properties, @RequestPart MultipartFile image) {
         adsService.addAds(properties, image);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -108,6 +112,7 @@ public class AdsController {
                     )
             }
     )
+    // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО
     @GetMapping("/{id}")
     public ResponseEntity<FullAdds> getFullAd(@PathVariable long id) {
@@ -118,6 +123,7 @@ public class AdsController {
             return ResponseEntity.ok(fullAdds);
         }
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -140,11 +146,21 @@ public class AdsController {
                     )
             }
     )
+
+    // -------------------------------------------------------------------------
+    //РЕАЛИЗОВАНО ЧАСТИЧНО
     @DeleteMapping("{id}")
     public ResponseEntity<?> removeAds(@PathVariable long id) {
-        adsService.removeAds(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        switch (adsService.removeAds(id)) {
+            case 204:
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            case 0:
+                return ResponseEntity.status(HttpStatus.OK).build();
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -175,11 +191,21 @@ public class AdsController {
                     )
             }
     )
+    // -------------------------------------------------------------------------
+    // РЕАЛИЗОВАНО
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateAds(@PathVariable int id, @RequestBody CreateAds createAds) {
-        adsService.updateAds(id, createAds);
-        return ResponseEntity.ok(null);
+    public ResponseEntity<?> updateAds(@PathVariable long id, @RequestBody CreateAds createAds) {
+        int result = adsService.updateAds(id, createAds);
+        switch (result) {
+            case 404:
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            case 0:
+                return ResponseEntity.status(HttpStatus.OK).build();
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -205,6 +231,8 @@ public class AdsController {
                     )
             }
     )
+
+    // Подготовить объявления для текущего пользователя - Sprint4 ???
     @GetMapping("me")
     public ResponseEntity<?> getAdsMe() {
         List<Ads> ads = adsService.getAdsMe();
@@ -230,6 +258,8 @@ public class AdsController {
                     )
             }
     )
+
+    // РАБОТА С ККАРТИНКОЙ SPRINT5 ???
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image) {
         adsService.updateAdsImage(id, image);

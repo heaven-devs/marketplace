@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +54,14 @@ public class AdsServiceImpl implements AdsService {
     }
     
     @Override
-    public int updateAds(int id, CreateAds createAds) {
+    public int updateAds(long id, CreateAds createAds) {
+        Optional <AdsModel> adsModelOptional = adsRepository.findById(id);
+        if (adsModelOptional.isEmpty()) {
+            return 404;
+        }
+        //AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(adsRepository.getById(id), createAds);
+        AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(adsModelOptional.get(), createAds);
+        adsRepository.save(adsModel);
         return 0;
     }
     

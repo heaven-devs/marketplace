@@ -36,7 +36,7 @@ public class AdsMapper {
         fullAdds.setPk(adsModel.getId());
         fullAdds.setAuthorFirstName(adsModel.getUser().getFirstName());
         fullAdds.setAuthorLastName(adsModel.getUser().getLastName());
-        //fullAdds.setDescription();
+        fullAdds.setDescription(adsModel.getDescription());
         fullAdds.setEmail(adsModel.getUser().getEmail());
         fullAdds.setImage(adsModel.getImage());
         fullAdds.setPhone(adsModel.getUser().getPhone());
@@ -47,9 +47,16 @@ public class AdsMapper {
 
     public static AdsModel CreateAdsToAdsModel(CreateAds createAds) {
         if (createAds == null) {
-            return null;
+            throw new RuntimeException("Неясно что делать, если createAds == null");
         }
         AdsModel adsModel = new AdsModel();
+        adsModel.setDescription(createAds.getDescription());
+        adsModel.setPrice(createAds.getPrice());
+        adsModel.setTitle(createAds.getTitle());
+        return adsModel;
+    }
+
+    public static AdsModel CreateAdsToAdsModel(AdsModel adsModel, CreateAds createAds){
         adsModel.setDescription(createAds.getDescription());
         adsModel.setPrice(createAds.getPrice());
         adsModel.setTitle(createAds.getTitle());
