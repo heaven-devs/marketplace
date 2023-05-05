@@ -6,8 +6,6 @@ import ga.heaven.marketplace.mapper.UserMapper;
 import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.repository.UserRepository;
 import ga.heaven.marketplace.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

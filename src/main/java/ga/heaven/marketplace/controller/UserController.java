@@ -1,6 +1,5 @@
 package ga.heaven.marketplace.controller;
 
-import ga.heaven.marketplace.MarketplaceApplication;
 import ga.heaven.marketplace.dto.NewPassword;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.model.UserModel;
