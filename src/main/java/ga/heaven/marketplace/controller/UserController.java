@@ -1,5 +1,6 @@
 package ga.heaven.marketplace.controller;
 
+import ga.heaven.marketplace.MarketplaceApplication;
 import ga.heaven.marketplace.dto.NewPassword;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.service.UserService;
@@ -7,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
 
@@ -55,7 +59,7 @@ public class UserController {
     )
     @GetMapping("/me")
     public ResponseEntity<?> getUser() {
-        System.out.println("getUser");
+        LOGGER.debug("getUser");
         return userService.getCurrentUser();
     }
 
@@ -95,7 +99,7 @@ public class UserController {
     )
     @PatchMapping("/me")
     public ResponseEntity<?> updateUser(@RequestBody UserDto userDto) {
-        System.out.println("updateUser");
+        LOGGER.debug("updateUser");
         return userService.updateUser(userDto);
     }
 
@@ -127,7 +131,7 @@ public class UserController {
     )
     @PostMapping("/set_password")
     public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword) {
-        System.out.println("setUserPassword");
+        LOGGER.debug("setUserPassword");
         return userService.setUserPassword(newPassword);
     }
 
@@ -149,7 +153,7 @@ public class UserController {
     )
     @PatchMapping("/me/image")
     public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image) {
-        System.out.println("loadUserImage");
+        LOGGER.debug("loadUserImage");
         return userService.loadUserImage(image);
     }
 

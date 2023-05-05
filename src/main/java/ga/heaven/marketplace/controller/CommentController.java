@@ -2,7 +2,6 @@ package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.CommentDto;
 import ga.heaven.marketplace.dto.ResponseWrapperComment;
-import ga.heaven.marketplace.service.AdsService;
 import ga.heaven.marketplace.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,7 +47,7 @@ public class CommentController {
     )
     @GetMapping("{id}/comments")
     public ResponseEntity<?> getComments(@PathVariable Integer id) {
-        ResponseWrapperComment comments = commentService.getComments(id.longValue());
+        ResponseWrapperComment comments = commentService.getComments(Long.valueOf(id));
         if (null == comments) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
