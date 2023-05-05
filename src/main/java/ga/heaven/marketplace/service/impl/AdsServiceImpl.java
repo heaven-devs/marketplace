@@ -74,4 +74,10 @@ public class AdsServiceImpl implements AdsService {
     public int updateAdsImage(int id, MultipartFile image) {
         return 0;
     }
+
+    @Override
+    public List<Ads> findByTitleContainingIgnoreCase(String searchTitle) {
+        List<AdsModel> adsModels = adsRepository.findByTitleLikeIgnoreCase("%"+searchTitle+"%");
+        return adsModels.stream().map(AdsMapper::adsModelToAds).collect(Collectors.toList());
+    }
 }

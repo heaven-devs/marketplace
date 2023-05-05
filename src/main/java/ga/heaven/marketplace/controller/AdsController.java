@@ -266,4 +266,13 @@ public class AdsController {
         return ResponseEntity.ok(null);
     }
 
+    // Поиск объявлений по подстроке в title с IgnoreCase
+    // Параметр подстроки передается из формы фронтенд части, поэтому в будущем, @PathVariable скорее всего поменяется
+    @GetMapping("/findbytitle/{searchTitle}")
+    public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
+        return ResponseEntity.ok(
+                adsService.findByTitleContainingIgnoreCase(searchTitle)
+        );
+    }
+
 }

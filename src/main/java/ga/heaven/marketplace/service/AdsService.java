@@ -20,4 +20,6 @@ public interface AdsService {
     List<Ads> getAdsMe();
 
     int updateAdsImage(int id, MultipartFile image);
+
+    List<Ads> findByTitleContainingIgnoreCase(String searchTitle);
 }
