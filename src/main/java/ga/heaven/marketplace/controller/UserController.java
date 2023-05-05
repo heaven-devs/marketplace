@@ -52,6 +52,7 @@ public class UserController {
         LOGGER.debug("getUser");
         UserDto currentUser = userService.getCurrentUser();
         if (null == currentUser) {
+            LOGGER.debug("user unauthorized");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok(currentUser);
@@ -81,6 +82,7 @@ public class UserController {
         LOGGER.debug("updateUser");
         UserModel currentUser = userService.updateUser(userDto);
         if (null == currentUser) {
+            LOGGER.debug("user unauthorized");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok(userDto);
@@ -111,13 +113,15 @@ public class UserController {
     public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword) {
         LOGGER.debug("setUserPassword");
         if (!userService.isPasswordCorrect(newPassword.currentPassword)) {
+            LOGGER.debug("incorrect current password");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         UserDto userDto = userService.setUserPassword(newPassword);
         if (null == userDto) {
+            LOGGER.debug("user unauthorized");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(newPassword);
+        return ResponseEntity.ok(userDto);
     }
 
     @Operation(
@@ -141,6 +145,7 @@ public class UserController {
         LOGGER.debug("loadUserImage");
         UserDto userDto = userService.loadUserImage(image);
         if (null == userDto) {
+            LOGGER.debug("user unauthorized");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok(userDto);
