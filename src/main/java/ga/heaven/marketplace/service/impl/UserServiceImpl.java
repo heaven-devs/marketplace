@@ -6,8 +6,6 @@ import ga.heaven.marketplace.mapper.UserMapper;
 import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.repository.UserRepository;
 import ga.heaven.marketplace.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,48 +26,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<UserDto> getCurrentUser() {
-        if (null == temporaryAuthorizedUser) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        UserDto userDto = mapper.mapToUserDto(temporaryAuthorizedUser);
-        return ResponseEntity.ok(userDto);
+    public UserDto getCurrentUser() {
+        return mapper.mapToUserDto(temporaryAuthorizedUser);
     }
 
     @Override
-    public ResponseEntity<UserDto> updateUser(UserDto userDto) {
-        if (null == temporaryAuthorizedUser) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if (temporaryAuthorizedUser.getId() != userDto.getId()) {
-            return ResponseEntity.notFound().build();
-        }
+    public UserModel updateUser(UserDto userDto) {
         UserModel userModel = mapper.mapUserDtoToUserModel(userDto, temporaryAuthorizedUser);
         repository.save(userModel);
-        return ResponseEntity.ok(userDto);
+        return userModel;
     }
 
     @Override
-    public ResponseEntity<NewPassword> setUserPassword(NewPassword newPassword) {
-        if (null == temporaryAuthorizedUser) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if (!passwordEncoder.matches(newPassword.currentPassword, temporaryAuthorizedUser.getPassword())) {
-            return ResponseEntity.notFound().build();
-        }
+    public UserDto setUserPassword(NewPassword newPassword) {
         temporaryAuthorizedUser.setPassword(passwordEncoder.encode(newPassword.newPassword));
         repository.save(temporaryAuthorizedUser);
-        return ResponseEntity.ok(newPassword);
+        return mapper.mapToUserDto(temporaryAuthorizedUser);
     }
 
     @Override
-    public ResponseEntity<UserDto> loadUserImage(MultipartFile image) {
-        if (null == temporaryAuthorizedUser) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public UserDto loadUserImage(MultipartFile image) {
         temporaryAuthorizedUser.setImage(image.toString());
         temporaryAuthorizedUser.setContentType(image.getContentType());
         repository.save(temporaryAuthorizedUser);
-        return ResponseEntity.ok().build();
+        return mapper.mapToUserDto(temporaryAuthorizedUser);
+    }
+
+    @Override
+    public boolean isPasswordCorrect(String currentPassword) {
+        return passwordEncoder.matches(currentPassword, temporaryAuthorizedUser.getPassword());
     }
 }

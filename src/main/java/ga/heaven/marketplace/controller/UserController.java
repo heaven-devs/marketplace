@@ -1,8 +1,8 @@
 package ga.heaven.marketplace.controller;
 
-import ga.heaven.marketplace.MarketplaceApplication;
 import ga.heaven.marketplace.dto.NewPassword;
 import ga.heaven.marketplace.dto.UserDto;
+import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,13 +10,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
-//@CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -44,23 +44,18 @@ public class UserController {
                             responseCode = "401",
                             description = "Unauthorized",
                             content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
                     )
             }
     )
     @GetMapping("/me")
     public ResponseEntity<?> getUser() {
         LOGGER.debug("getUser");
-        return userService.getCurrentUser();
+        UserDto currentUser = userService.getCurrentUser();
+        if (null == currentUser) {
+            LOGGER.debug("user unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(currentUser);
     }
 
     @Operation(
@@ -76,23 +71,8 @@ public class UserController {
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "204",
-                            description = "No Content",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
                             responseCode = "401",
                             description = "Unauthorized",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
                             content = @Content()
                     )
             }
@@ -100,7 +80,12 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<?> updateUser(@RequestBody UserDto userDto) {
         LOGGER.debug("updateUser");
-        return userService.updateUser(userDto);
+        UserModel currentUser = userService.updateUser(userDto);
+        if (null == currentUser) {
+            LOGGER.debug("user unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(userDto);
     }
 
     @Operation(
@@ -121,18 +106,22 @@ public class UserController {
                             responseCode = "403",
                             description = "Forbidden",
                             content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
                     )
             }
     )
     @PostMapping("/set_password")
     public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword) {
         LOGGER.debug("setUserPassword");
-        return userService.setUserPassword(newPassword);
+        if (!userService.isPasswordCorrect(newPassword.currentPassword)) {
+            LOGGER.debug("incorrect current password");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        UserDto userDto = userService.setUserPassword(newPassword);
+        if (null == userDto) {
+            LOGGER.debug("user unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(userDto);
     }
 
     @Operation(
@@ -145,8 +134,8 @@ public class UserController {
                             content = @Content()
                     ),
                     @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
+                            responseCode = "401",
+                            description = "Unauthorized",
                             content = @Content()
                     )
             }
@@ -154,7 +143,11 @@ public class UserController {
     @PatchMapping("/me/image")
     public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image) {
         LOGGER.debug("loadUserImage");
-        return userService.loadUserImage(image);
+        UserDto userDto = userService.loadUserImage(image);
+        if (null == userDto) {
+            LOGGER.debug("user unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(userDto);
     }
-
 }
