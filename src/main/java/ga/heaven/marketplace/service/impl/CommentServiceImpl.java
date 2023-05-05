@@ -41,22 +41,16 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseWrapperComment getComments(Long id) {
         List<CommentModel> commentList = commentRepository.findAllByAds_Id(id);
-        ResponseWrapperComment wrapperComment = new ResponseWrapperComment();
-        
         if (commentList.isEmpty()) {
-            wrapperComment.setCount(0);
-            wrapperComment.setResults(new ArrayList<>() {
-            });
-        } else {
-            wrapperComment.setCount(commentList.size());
-            wrapperComment.setResults(
-                    commentList.stream()
-                            .map(commentMapper::mapCommentModelToCommentDto)
-                            .collect(Collectors.toList())
-            );
-            
+            return null;
         }
-        
+        ResponseWrapperComment wrapperComment = new ResponseWrapperComment();
+        wrapperComment.setCount(commentList.size());
+        wrapperComment.setResults(
+                commentList.stream()
+                        .map(commentMapper::mapCommentModelToCommentDto)
+                        .collect(Collectors.toList())
+        );
         return wrapperComment;
     }
     
