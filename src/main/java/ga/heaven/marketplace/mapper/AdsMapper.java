@@ -20,7 +20,8 @@ public class AdsMapper {
     public static Ads adsModelToAds(AdsModel adsModel){
         Ads ads = new Ads();
         ads.setAuthor(adsModel.getUser().getId());
-        ads.setImage(adsModel.getImage());
+        ads.setImage(null);
+        //ads.setImage(adsModel.getImage());
         ads.setPk(adsModel.getId());
         ads.setPrice(adsModel.getPrice());
         ads.setTitle(adsModel.getTitle());
