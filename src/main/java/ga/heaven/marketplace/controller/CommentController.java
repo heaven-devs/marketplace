@@ -1,7 +1,8 @@
 package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.CommentDto;
-import ga.heaven.marketplace.dto.ResponseWrapperComment;
+import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
+import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
 import ga.heaven.marketplace.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,23 +36,25 @@ public class CommentController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ResponseWrapperComment.class)
+                                    schema = @Schema(implementation = ResponseWrapperCommentDto.class)
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
+                            responseCode = "401",
+                            description = "Unauthorized",
                             content = @Content()
                     )
             }
     )
     @GetMapping("{id}/comments")
-    public ResponseEntity<?> getComments(@PathVariable Integer id) {
-        ResponseWrapperComment comments = commentService.getComments(Long.valueOf(id));
-        if (null == comments) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> getComments(@PathVariable Integer id, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(comments);
+        RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
+        rq.setAdId(id);
+        ResponseWrapperCommentDto rs = commentService.getComments(rq);
+        return ResponseEntity.ok(rs);
     }
 
     @Operation(
@@ -70,23 +73,21 @@ public class CommentController {
                             responseCode = "401",
                             description = "Unauthorized",
                             content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
                     )
             }
     )
     @PostMapping(value = "{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addComments(@PathVariable Integer id, @RequestBody CommentDto comment, Authentication authentication) {
-        CommentDto res = commentService.addComments(id, comment, authentication.getName());
-        return ResponseEntity.ok(res);
+    public ResponseEntity<?> addComment(@PathVariable Integer id, @RequestBody CommentDto comment, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
+        rq.setAdId(id);
+        rq.setData(comment);
+        CommentDto rs = commentService.addComment(rq);
+        
+        
+        return ResponseEntity.ok(rs);
     }
 
     @Operation(
@@ -107,17 +108,23 @@ public class CommentController {
                             responseCode = "403",
                             description = "Forbidden",
                             content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
                     )
             }
     )
     @DeleteMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<?> deleteComments(@PathVariable int adId, @PathVariable int commentId) {
-        CommentDto comment = commentService.deleteComments(adId, commentId).orElse(null);
+    public ResponseEntity<?> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
+        CommentDto comment = new CommentDto();
+        rq.setAdId(adId);
+        comment.setPk(commentId);
+        rq.setData(comment);
+        comment = commentService.deleteComment(rq);
+        if (null == comment) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
         return ResponseEntity.ok(comment);
     }
 
@@ -142,18 +149,23 @@ public class CommentController {
                             responseCode = "403",
                             description = "Forbidden",
                             content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
                     )
             }
     )
     @PatchMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<?> updateComments(@PathVariable int adId, @PathVariable int commentId) {
-        CommentDto comment = commentService.updateComments(adId, commentId).orElse(null);
-        return ResponseEntity.ok(null);
+    public ResponseEntity<?> updateComment(@PathVariable Integer adId, @PathVariable Integer commentId, @RequestBody CommentDto comment, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
+        rq.setAdId(adId);
+        comment.setPk(commentId);
+        rq.setData(comment);
+        comment = commentService.updateComment(rq);
+        if (null == comment) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        return ResponseEntity.ok(comment);
     }
 
 }

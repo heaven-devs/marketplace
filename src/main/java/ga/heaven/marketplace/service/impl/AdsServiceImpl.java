@@ -1,10 +1,9 @@
 package ga.heaven.marketplace.service.impl;
 
-import ga.heaven.marketplace.dto.Ads;
-import ga.heaven.marketplace.dto.CreateAds;
-import ga.heaven.marketplace.dto.FullAdds;
+import ga.heaven.marketplace.dto.*;
 import ga.heaven.marketplace.mapper.AdsMapper;
 import ga.heaven.marketplace.model.AdsModel;
+import ga.heaven.marketplace.model.CommentModel;
 import ga.heaven.marketplace.repository.AdsRepository;
 import ga.heaven.marketplace.service.AdsService;
 import org.springframework.stereotype.Service;
@@ -23,12 +22,18 @@ public class AdsServiceImpl implements AdsService {
         this.adsRepository = adsRepository;
     }
     
-    
-    public List<Ads> getAds() {
+    public ResponseWrapperAds getAds() {
         //List<Ads> ads = new ArrayList<>();
-         List<AdsModel> adsModels = adsRepository.findAll();
+        List<AdsModel> adsModels = adsRepository.findAll();
+        ResponseWrapperAds wrapperAds = new ResponseWrapperAds();
+        wrapperAds.setCount(adsModels.size());
+        wrapperAds.setResults(
+                adsModels.stream()
+                        .map(AdsMapper::adsModelToAds)
+                        .collect(Collectors.toList())
+        );
         //return AdsMapper.INSTANCE.adsModelToAds(a);
-        return adsModels.stream().map(AdsMapper::adsModelToAds).collect(Collectors.toList());
+        return wrapperAds;
     }
     
     public void addAds(CreateAds properties, MultipartFile image) {
@@ -55,7 +60,7 @@ public class AdsServiceImpl implements AdsService {
     
     @Override
     public int updateAds(long id, CreateAds createAds) {
-        Optional <AdsModel> adsModelOptional = adsRepository.findById(id);
+        Optional<AdsModel> adsModelOptional = adsRepository.findById(id);
         if (adsModelOptional.isEmpty()) {
             return 404;
         }
@@ -74,10 +79,10 @@ public class AdsServiceImpl implements AdsService {
     public int updateAdsImage(int id, MultipartFile image) {
         return 0;
     }
-
+    
     @Override
     public List<Ads> findByTitleContainingIgnoreCase(String searchTitle) {
-        List<AdsModel> adsModels = adsRepository.findByTitleLikeIgnoreCase("%"+searchTitle+"%");
+        List<AdsModel> adsModels = adsRepository.findByTitleLikeIgnoreCase("%" + searchTitle + "%");
         return adsModels.stream().map(AdsMapper::adsModelToAds).collect(Collectors.toList());
     }
 }

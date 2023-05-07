@@ -3,12 +3,13 @@ package ga.heaven.marketplace.service;
 import ga.heaven.marketplace.dto.Ads;
 import ga.heaven.marketplace.dto.CreateAds;
 import ga.heaven.marketplace.dto.FullAdds;
+import ga.heaven.marketplace.dto.ResponseWrapperAds;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface AdsService {
-    List<Ads> getAds();
+    ResponseWrapperAds getAds();
     void addAds(CreateAds properties, MultipartFile image);
     
     FullAdds getFullAd(long id);

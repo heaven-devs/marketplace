@@ -1,25 +1,27 @@
 package ga.heaven.marketplace.model;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
-@Table(name = "mp_comments")
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "mp_comments")
 public class CommentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private UserModel user;
     @ManyToOne
+    @JoinColumn(name = "ads_id")
     private AdsModel ads;
     private LocalDateTime createdAt;
     private String text;
@@ -27,13 +29,15 @@ public class CommentModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         CommentModel that = (CommentModel) o;
-        return id != null && Objects.equals(id, that.id);
+        return Objects.equals(user.getId(), that.user.getId()) &&
+                Objects.equals(ads.getId(), that.ads.getId()) &&
+                Objects.equals(text, that.text);
     }
     
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(user.getId(), ads.getId(), text);
     }
 }

@@ -1,9 +1,6 @@
 package ga.heaven.marketplace.controller;
 
-import ga.heaven.marketplace.dto.Ads;
-import ga.heaven.marketplace.dto.CreateAds;
-import ga.heaven.marketplace.dto.FullAdds;
-import ga.heaven.marketplace.dto.ResponseWrapperAds;
+import ga.heaven.marketplace.dto.*;
 import ga.heaven.marketplace.service.AdsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -48,8 +45,10 @@ public class AdsController {
     // РЕАЛИЗОВАНО
     @GetMapping
     public ResponseEntity<?> getAds() {
-        List<Ads> ads = adsService.getAds();
-        return ResponseEntity.ok(ads);
+        /*List<Ads> ads = adsService.getAds();
+        return ResponseEntity.ok(ads);*/
+        ResponseWrapperAds rs = adsService.getAds();
+        return ResponseEntity.ok(rs);
     }
     // -------------------------------------------------------------------------
 

@@ -24,7 +24,7 @@ public class AdsMapper {
         ads.setPk(adsModel.getId());
         ads.setPrice(adsModel.getPrice());
         ads.setTitle(adsModel.getTitle());
-        ads.setContentType(adsModel.getContentType());
+        //ads.setContentType(adsModel.getContentType());
         return ads;
     }
 

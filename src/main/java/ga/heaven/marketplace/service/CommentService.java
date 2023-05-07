@@ -1,17 +1,16 @@
 package ga.heaven.marketplace.service;
 
 import ga.heaven.marketplace.dto.CommentDto;
-import ga.heaven.marketplace.dto.ResponseWrapperComment;
-
-import java.util.Optional;
+import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
+import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
 
 public interface CommentService {
-    ResponseWrapperComment getComments(Long id);
+    ResponseWrapperCommentDto getComments(RequestWrapperCommentDto rq);
     
-    CommentDto addComments(Integer id, CommentDto comment, String username);
+    CommentDto addComment(RequestWrapperCommentDto rq);
     
-    Optional<CommentDto> deleteComments(int adId, int id);
+    CommentDto deleteComment(RequestWrapperCommentDto rq);
 
-    Optional<CommentDto> updateComments(int adId, int commentId);
+    CommentDto updateComment(RequestWrapperCommentDto rq);
 
 }
