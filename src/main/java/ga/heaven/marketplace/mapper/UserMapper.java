@@ -18,7 +18,11 @@ public class UserMapper {
         dto.setImage(userModel.getImage());
         return dto;
     }
-
+    
+    public UserModel mapUserDtoToUserModel(UserDto userDto) {
+        return mapUserDtoToUserModel(userDto, new UserModel());
+    }
+    
     public UserModel mapUserDtoToUserModel(UserDto userDto, UserModel userModel) {
         userModel.setId(userDto.getId());
         userModel.setEmail(userDto.getEmail());

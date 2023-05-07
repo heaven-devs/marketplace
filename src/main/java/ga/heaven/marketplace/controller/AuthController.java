@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@CrossOrigin(value = "http://marketplace.heaven.ga")
+//@CrossOrigin(value = "http://marketplace.heaven.ga")
+@CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RestController
 @RequiredArgsConstructor
 public class AuthController {

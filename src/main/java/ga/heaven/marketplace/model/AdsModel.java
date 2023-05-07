@@ -12,9 +12,10 @@ public class AdsModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;       // id объявления
     private String image; // ссылка на картинку объявления
-    private Integer price;    // цена объявления
+    private int price;    // цена объявления
     private String title; // заголовок объявления
     private String contentType; // тип файла image
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

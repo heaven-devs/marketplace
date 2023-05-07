@@ -11,8 +11,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
+//@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
 public class WebSecurityConfig {
     
     private static final String[] AUTH_WHITELIST = {

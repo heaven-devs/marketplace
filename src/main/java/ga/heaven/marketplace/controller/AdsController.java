@@ -10,16 +10,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = "http://marketplace.heaven.ga")
-@RequestMapping("/ads")
+//@CrossOrigin(value = "http://marketplace.heaven.ga")
+//@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
+@RequestMapping("ads")
 public class AdsController {
     private final AdsService adsService;
 
@@ -41,11 +41,16 @@ public class AdsController {
                     )
             }
     )
+    // -------------------------------------------------------------------------
+    // РЕАЛИЗОВАНО
     @GetMapping
     public ResponseEntity<?> getAds() {
-        List<Ads> ads = adsService.getAds();
-        return ResponseEntity.ok(ads);
+        /*List<Ads> ads = adsService.getAds();
+        return ResponseEntity.ok(ads);*/
+        ResponseWrapperAds rs = adsService.getAds();
+        return ResponseEntity.ok(rs);
     }
+    // ---------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -76,12 +81,16 @@ public class AdsController {
                     )
             }
     )
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+
+    // -------------------------------------------------------------------------
+    // РЕАЛИЗОВАНО ЧАСТИЧНО
+    @PostMapping(name="/newAd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    //    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> addAds(@RequestPart CreateAds properties, @RequestPart MultipartFile image) {
         adsService.addAds(properties, image);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -102,11 +111,18 @@ public class AdsController {
                     )
             }
     )
+    // -------------------------------------------------------------------------
+    // РЕАЛИЗОВАНО
     @GetMapping("/{id}")
-    public ResponseEntity<?> getFullAd(@PathVariable int id) {
+    public ResponseEntity<FullAdds> getFullAd(@PathVariable long id) {
         FullAdds fullAdds = adsService.getFullAd(id);
-        return ResponseEntity.ok(fullAdds);
+        if (fullAdds == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(fullAdds);
+        }
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -129,11 +145,21 @@ public class AdsController {
                     )
             }
     )
+
+    // -------------------------------------------------------------------------
+    //РЕАЛИЗОВАНО ЧАСТИЧНО
     @DeleteMapping("{id}")
-    public ResponseEntity<?> removeAds(@PathVariable int id) {
-        adsService.removeAds(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<?> removeAds(@PathVariable long id) {
+        switch (adsService.removeAds(id)) {
+            case 204:
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            case 0:
+                return ResponseEntity.status(HttpStatus.OK).build();
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -164,11 +190,21 @@ public class AdsController {
                     )
             }
     )
+    // -------------------------------------------------------------------------
+    // РЕАЛИЗОВАНО
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateAds(@PathVariable int id, @RequestBody CreateAds createAds) {
-        adsService.updateAds(id, createAds);
-        return ResponseEntity.ok(null);
+    public ResponseEntity<?> updateAds(@PathVariable long id, @RequestBody CreateAds createAds) {
+        int result = adsService.updateAds(id, createAds);
+        switch (result) {
+            case 404:
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            case 0:
+                return ResponseEntity.status(HttpStatus.OK).build();
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
+    // -------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
@@ -194,6 +230,8 @@ public class AdsController {
                     )
             }
     )
+
+    // Подготовить объявления для текущего пользователя - Sprint4 ???
     @GetMapping("me")
     public ResponseEntity<?> getAdsMe() {
         List<Ads> ads = adsService.getAdsMe();
@@ -219,140 +257,21 @@ public class AdsController {
                     )
             }
     )
+
+    // РАБОТА С ККАРТИНКОЙ SPRINT5 ???
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image) {
         adsService.updateAdsImage(id, image);
         return ResponseEntity.ok(null);
     }
 
-    @Operation(
-            tags = "Комментарии",
-            summary = "Получить комментарии объявления",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "OK",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ResponseWrapperComment.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
-                    )
-            }
-    )
-    @GetMapping("{id}/comments")
-    public ResponseEntity<?> getComments(@PathVariable Integer id) {
-        ResponseWrapperComment comments = adsService.getComments(id.longValue());
-        if (null == comments) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(comments);
-    }
-
-    @Operation(
-            tags = "Комментарии",
-            summary = "Добавить комментарий к объявлению",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "OK",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = CommentDto.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
-                    )
-            }
-    )
-    @PostMapping(value = "{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addComments(@PathVariable Integer id, @RequestBody CommentDto comment, Authentication authentication) {
-        CommentDto res = adsService.addComments(id, comment, authentication.getName());
-        return ResponseEntity.ok(res);
-    }
-
-    @Operation(
-            tags = "Комментарии",
-            summary = "Удалить комментарий",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "OK",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
-                    )
-            }
-    )
-    @DeleteMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<?> deleteComments(@PathVariable int adId, @PathVariable int commentId) {
-        CommentDto comment = adsService.deleteComments(adId, commentId).orElse(null);
-        return ResponseEntity.ok(comment);
-    }
-
-    @Operation(
-            tags = "Комментарии",
-            summary = "Обновить комментарий",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "OK",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = CommentDto.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content()
-                    )
-            }
-    )
-    @PatchMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<?> updateComments(@PathVariable int adId, @PathVariable int commentId) {
-        CommentDto comment = adsService.updateComments(adId, commentId).orElse(null);
-        return ResponseEntity.ok(null);
+    // Поиск объявлений по подстроке в title с IgnoreCase
+    // Параметр подстроки передается из формы фронтенд части, поэтому в будущем, @PathVariable скорее всего поменяется
+    @GetMapping("/findbytitle/{searchTitle}")
+    public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
+        return ResponseEntity.ok(
+                adsService.findByTitleContainingIgnoreCase(searchTitle)
+        );
     }
 
 }
