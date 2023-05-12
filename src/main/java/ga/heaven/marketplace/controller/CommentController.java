@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-//@CrossOrigin(value = "http://marketplace.heaven.ga")
-//@CrossOrigin(value = "http://localhost:3000")
 @CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RequestMapping("ads")
 public class CommentController {
@@ -84,9 +82,8 @@ public class CommentController {
         RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
         rq.setAdId(id);
         rq.setData(comment);
-        CommentDto rs = commentService.addComment(rq);
-        
-        
+        CommentDto rs = commentService.addComment(rq, authentication.getName());
+
         return ResponseEntity.ok(rs);
     }
 

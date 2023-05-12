@@ -18,7 +18,7 @@ public interface AdsService {
 
     int updateAds(long id, CreateAds createAds);
     
-    List<Ads> getAdsMe();
+    List<Ads> getAdsMe(String username);
 
     int updateAdsImage(int id, MultipartFile image);
 

@@ -58,14 +58,14 @@ public class CommentServiceImpl implements CommentService {
     }
     
     @Override
-    public CommentDto addComment(RequestWrapperCommentDto rq) {
+    public CommentDto addComment(RequestWrapperCommentDto rq, String username) {
         Long adId = commentMapper.adIdFromRequestWrapperDto(rq);
         Optional<AdsModel> adModelOptional =
                 adRepository.findById(adId);
         if (adModelOptional.isEmpty()) {
             return null;
         }
-        UserModel userModel = userRepository.findById(userService.getCurrentUser().getId()).orElse(null);
+        UserModel userModel = userService.getUser(username);
 //        UserModel userModel = userMapper.mapUserDtoToUserModel(userService.getCurrentUser());
         CommentModel commentModel = commentMapper.commentModelFromRequestWrapperDto(rq);
         commentModel.setCreatedAt(LocalDateTime.now());

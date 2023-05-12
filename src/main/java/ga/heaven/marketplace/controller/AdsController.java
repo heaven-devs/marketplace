@@ -10,14 +10,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
-//@CrossOrigin(value = "http://marketplace.heaven.ga")
-//@CrossOrigin(value = "http://localhost:3000")
 @CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RequestMapping("ads")
 public class AdsController {
@@ -231,10 +230,9 @@ public class AdsController {
             }
     )
 
-    // Подготовить объявления для текущего пользователя - Sprint4 ???
     @GetMapping("me")
-    public ResponseEntity<?> getAdsMe() {
-        List<Ads> ads = adsService.getAdsMe();
+    public ResponseEntity<?> getAdsMe(Authentication authentication) {
+        List<Ads> ads = adsService.getAdsMe(authentication.getName());
         return ResponseEntity.ok(ads);
     }
 

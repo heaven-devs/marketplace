@@ -7,7 +7,7 @@ import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
 public interface CommentService {
     ResponseWrapperCommentDto getComments(RequestWrapperCommentDto rq);
     
-    CommentDto addComment(RequestWrapperCommentDto rq);
+    CommentDto addComment(RequestWrapperCommentDto rq, String username);
     
     CommentDto deleteComment(RequestWrapperCommentDto rq);
 

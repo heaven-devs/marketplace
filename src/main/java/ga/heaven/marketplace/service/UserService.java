@@ -7,13 +7,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
-    UserDto getCurrentUser();
+    UserDto getCurrentUser(String username);
 
-    UserModel updateUser(UserDto userDto);
+    UserModel updateUser(UserModel authUser, UserDto userDto);
 
-    UserDto setUserPassword(NewPassword newPassword);
+    UserModel getUser(String username);
 
-    UserDto loadUserImage(MultipartFile image);
+    UserDto setUserPassword(UserModel authUser, NewPassword newPassword);
 
-    boolean isPasswordCorrect(String currentPassword);
+    UserDto loadUserImage(UserModel authUser, MultipartFile image);
+
+    boolean isPasswordCorrect(UserModel authUser, String currentPassword);
 }
