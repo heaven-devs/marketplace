@@ -2,21 +2,21 @@ package ga.heaven.marketplace.service.impl;
 
 import ga.heaven.marketplace.dto.RegisterReq;
 import ga.heaven.marketplace.dto.Role;
+import ga.heaven.marketplace.security.UserDetailsManagerImpl;
 import ga.heaven.marketplace.service.AuthService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
-  private final UserDetailsManager manager;
+  private final UserDetailsManagerImpl manager;
 
   private final PasswordEncoder encoder;
 
-  public AuthServiceImpl(UserDetailsManager manager, PasswordEncoder passwordEncoder) {
+  public AuthServiceImpl(UserDetailsManagerImpl manager, PasswordEncoder passwordEncoder) {
     this.manager = manager;
     this.encoder = passwordEncoder;
   }

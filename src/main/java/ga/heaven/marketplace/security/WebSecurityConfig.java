@@ -1,44 +1,29 @@
-package ga.heaven.marketplace;
+package ga.heaven.marketplace.security;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
-//@CrossOrigin(value = "http://localhost:3000")
 @CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
 public class WebSecurityConfig {
-    
+
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v3/api-docs",
             "/webjars/**",
             "/login",
-            "/register"
+            "/register",
+            "/ads"
     };
-    
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user =
-                User.builder()
-                        .username("user@gmail.com")
-                        .password("password")
-                        .passwordEncoder((plainText) -> passwordEncoder().encode(plainText))
-                        .roles("USER")
-                        .build();
-        return new InMemoryUserDetailsManager(user);
-    }
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -50,16 +35,15 @@ public class WebSecurityConfig {
                         (authorization) ->
                                 authorization
                                         .mvcMatchers(AUTH_WHITELIST).permitAll()
-                        //.mvcMatchers("/ads/**", "/users/**").authenticated()
+                        .mvcMatchers("/ads/**", "/users/**").authenticated()
                 )
                 .cors()
                 .and()
                 .httpBasic(withDefaults())
         ;
-//        http.headers().frameOptions().disable();
         return http.build();
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
