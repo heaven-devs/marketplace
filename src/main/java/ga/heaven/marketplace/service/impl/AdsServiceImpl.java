@@ -3,7 +3,7 @@ package ga.heaven.marketplace.service.impl;
 import ga.heaven.marketplace.dto.*;
 import ga.heaven.marketplace.mapper.AdsMapper;
 import ga.heaven.marketplace.model.AdsModel;
-import ga.heaven.marketplace.model.CommentModel;
+import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.repository.AdsRepository;
 import ga.heaven.marketplace.service.AdsService;
 import org.springframework.stereotype.Service;
@@ -16,10 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class AdsServiceImpl implements AdsService {
     private final AdsRepository adsRepository;
-    
+    private final UserServiceImpl userService;
+
     public AdsServiceImpl(
-            AdsRepository adsRepository) {
+            AdsRepository adsRepository, UserServiceImpl userService) {
         this.adsRepository = adsRepository;
+        this.userService = userService;
     }
     
     public ResponseWrapperAds getAds() {
@@ -71,8 +73,10 @@ public class AdsServiceImpl implements AdsService {
     }
     
     @Override
-    public List<Ads> getAdsMe() {
-        return null;
+    public List<Ads> getAdsMe(String username) {
+        UserModel user = userService.getUser(username);
+        List<AdsModel> adsModels = adsRepository.findAdsModelByUserId(user.getId());
+        return adsModels.stream().map(AdsMapper::adsModelToAds).collect(Collectors.toList());
     }
     
     @Override

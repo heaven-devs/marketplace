@@ -4,9 +4,6 @@ import ga.heaven.marketplace.dto.Ads;
 import ga.heaven.marketplace.dto.CreateAds;
 import ga.heaven.marketplace.dto.FullAdds;
 import ga.heaven.marketplace.model.AdsModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 //@Mapper
 //public interface AdsMapper {
@@ -38,7 +35,7 @@ public class AdsMapper {
         fullAdds.setAuthorFirstName(adsModel.getUser().getFirstName());
         fullAdds.setAuthorLastName(adsModel.getUser().getLastName());
         fullAdds.setDescription(adsModel.getDescription());
-        fullAdds.setEmail(adsModel.getUser().getEmail());
+        fullAdds.setEmail(adsModel.getUser().getUsername());
         fullAdds.setImage(adsModel.getImage());
         fullAdds.setPhone(adsModel.getUser().getPhone());
         fullAdds.setPrice((adsModel.getPrice()));
