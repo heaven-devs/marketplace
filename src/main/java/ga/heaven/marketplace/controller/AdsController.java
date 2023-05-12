@@ -50,7 +50,7 @@ public class AdsController {
         ResponseWrapperAds rs = adsService.getAds();
         return ResponseEntity.ok(rs);
     }
-    // -------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
 
     @Operation(
             tags = "Объявления",
