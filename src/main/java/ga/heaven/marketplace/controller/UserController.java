@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,14 +49,14 @@ public class UserController {
             }
     )
     @GetMapping("/me")
-    public ResponseEntity<?> getUser() {
-        LOGGER.debug("getUser");
-        UserDto currentUser = userService.getCurrentUser();
-        if (null == currentUser) {
-            LOGGER.debug("user unauthorized");
+    public ResponseEntity<?> getUser(Authentication authentication) {
+        if (null == authentication) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(currentUser);
+
+        UserDto authUser = userService.getCurrentUser(authentication.getName());
+        authUser.setImage(null);
+        return ResponseEntity.ok(authUser);
     }
 
     @Operation(
@@ -78,13 +79,13 @@ public class UserController {
             }
     )
     @PatchMapping("/me")
-    public ResponseEntity<?> updateUser(@RequestBody UserDto userDto) {
-        LOGGER.debug("updateUser");
-        UserModel currentUser = userService.updateUser(userDto);
-        if (null == currentUser) {
-            LOGGER.debug("user unauthorized");
+    public ResponseEntity<?> updateUser(@RequestBody UserDto userDto, Authentication authentication) {
+        if (null == authentication) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        UserModel authUser = userService.getUser(authentication.getName());
+        userService.updateUser(authUser, userDto);
         return ResponseEntity.ok(userDto);
     }
 
@@ -110,18 +111,19 @@ public class UserController {
             }
     )
     @PostMapping("/set_password")
-    public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword) {
-        LOGGER.debug("setUserPassword");
-        if (!userService.isPasswordCorrect(newPassword.currentPassword)) {
-            LOGGER.debug("incorrect current password");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        UserDto userDto = userService.setUserPassword(newPassword);
-        if (null == userDto) {
-            LOGGER.debug("user unauthorized");
+    public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword, Authentication authentication) {
+
+        if (null == authentication) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(userDto);
+
+        UserModel user = userService.getUser(authentication.getName());
+        if (!userService.isPasswordCorrect(user, newPassword.currentPassword)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        UserDto modifiedUserDto = userService.setUserPassword(user, newPassword);
+        return ResponseEntity.ok(modifiedUserDto);
     }
 
     @Operation(
@@ -141,13 +143,13 @@ public class UserController {
             }
     )
     @PatchMapping("/me/image")
-    public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image) {
-        LOGGER.debug("loadUserImage");
-        UserDto userDto = userService.loadUserImage(image);
-        if (null == userDto) {
-            LOGGER.debug("user unauthorized");
+    public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image, Authentication authentication) {
+        if (null == authentication) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        UserModel authUser = userService.getUser(authentication.getName());
+        UserDto userDto = userService.loadUserImage(authUser, image);
         return ResponseEntity.ok(userDto);
     }
 }
