@@ -90,4 +90,9 @@ public class AdsServiceImpl implements AdsService {
         List<AdsModel> adsModels = adsRepository.findByTitleLikeIgnoreCase("%" + searchTitle + "%");
         return adsModels.stream().map(AdsMapper::adsModelToAds).collect(Collectors.toList());
     }
+
+    @Override
+    public AdsModel getAdsById(long id) {
+        return adsRepository.findById(id).orElse(null);
+    }
 }

@@ -1,6 +1,7 @@
 package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.*;
+import ga.heaven.marketplace.model.AdsModel;
 import ga.heaven.marketplace.service.AdsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -84,7 +85,7 @@ public class AdsController {
     )
 
     // -------------------------------------------------------------------------
-    // РЕАЛИЗОВАНО ЧАСТИЧНО
+    // РЕАЛИЗОВАНО ЧАСТИЧНО Спринт4
     @PostMapping(name="/newAd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     //@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addAds(@RequestPart CreateAds properties, @RequestPart MultipartFile image, Authentication authentication) {
@@ -116,7 +117,7 @@ public class AdsController {
             }
     )
     // -------------------------------------------------------------------------
-    // РЕАЛИЗОВАНО
+    // РЕАЛИЗОВАНО. Спринт 4
     @GetMapping("/ads/{id}")
     public ResponseEntity<FullAdds> getFullAd(@PathVariable long id, Authentication authentication) {
         if (null == authentication) {
@@ -127,6 +128,9 @@ public class AdsController {
         if (fullAdds == null) {
             return ResponseEntity.notFound().build();
         } else {
+            if (fullAdds.getEmail() != authentication.getName()) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
             return ResponseEntity.ok(fullAdds);
         }
     }
@@ -155,9 +159,21 @@ public class AdsController {
     )
 
     // -------------------------------------------------------------------------
-    //РЕАЛИЗОВАНО ЧАСТИЧНО
+    //РЕАЛИЗОВАНО Спрринт4 (ПРОВЕРИТЬ УДАЛЕНИЕ, FORBIDDEN РАБОТАЕТ)
     @DeleteMapping("/ads/{id}")
-    public ResponseEntity<?> removeAds(@PathVariable long id) {
+    public ResponseEntity<?> removeAds(@PathVariable long id, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        AdsModel adsModel = adsService.getAdsById(id);
+
+        if (adsModel == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }else if (adsModel.getUser().getUsername() != authentication.getName()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
         switch (adsService.removeAds(id)) {
             case 204:
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -201,7 +217,11 @@ public class AdsController {
     // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО
     @PatchMapping(value = "/ads/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateAds(@PathVariable long id, @RequestBody CreateAds createAds) {
+    public ResponseEntity<?> updateAds(@PathVariable long id, @RequestBody CreateAds createAds, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
         int result = adsService.updateAds(id, createAds);
         switch (result) {
             case 404:
@@ -267,7 +287,11 @@ public class AdsController {
 
     // РАБОТА С ККАРТИНКОЙ SPRINT5 ???
     @PatchMapping(value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image) {
+    public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
         adsService.updateAdsImage(id, image);
         return ResponseEntity.ok(null);
     }
@@ -275,7 +299,11 @@ public class AdsController {
     // Поиск объявлений по подстроке в title с IgnoreCase
     // Параметр подстроки передается из формы фронтенд части, поэтому в будущем, @PathVariable скорее всего поменяется
     @GetMapping("/ads/findbytitle/{searchTitle}")
-    public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
+    public ResponseEntity<?> searchAds(@PathVariable String searchTitle, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
         return ResponseEntity.ok(
                 adsService.findByTitleContainingIgnoreCase(searchTitle)
         );
