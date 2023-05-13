@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface AdsService {
     ResponseWrapperAds getAds();
-    void addAds(CreateAds properties, MultipartFile image);
+    void addAds(CreateAds properties, MultipartFile image, String userName);
     
     FullAdds getFullAd(long id);
 

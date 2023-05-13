@@ -38,9 +38,10 @@ public class AdsServiceImpl implements AdsService {
         return wrapperAds;
     }
     
-    public void addAds(CreateAds properties, MultipartFile image) {
+    public void addAds(CreateAds properties, MultipartFile image, String userName) {
         AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(properties);
-        // ДОБАВИТЬ ЛОГИКУ ПО IMAGE и по USER
+        // ДОБАВИТЬ ЛОГИКУ ПО IMAGE
+        adsModel.setUser(userService.getUser(userName));
         adsRepository.save(adsModel);
     }
     

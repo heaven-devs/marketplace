@@ -13,12 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
-@RequestMapping("ads")
+//@RequestMapping("ads")
 public class AdsController {
     private final AdsService adsService;
 
@@ -42,7 +43,8 @@ public class AdsController {
     )
     // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО
-    @GetMapping
+    //@GetMapping
+    @GetMapping("/ads")
     public ResponseEntity<?> getAds() {
         /*List<Ads> ads = adsService.getAds();
         return ResponseEntity.ok(ads);*/
@@ -84,9 +86,12 @@ public class AdsController {
     // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО ЧАСТИЧНО
     @PostMapping(name="/newAd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    //    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> addAds(@RequestPart CreateAds properties, @RequestPart MultipartFile image) {
-        adsService.addAds(properties, image);
+    //@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addAds(@RequestPart CreateAds properties, @RequestPart MultipartFile image, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        adsService.addAds(properties, image, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     // -------------------------------------------------------------------------
@@ -112,8 +117,12 @@ public class AdsController {
     )
     // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО
-    @GetMapping("/{id}")
-    public ResponseEntity<FullAdds> getFullAd(@PathVariable long id) {
+    @GetMapping("/ads/{id}")
+    public ResponseEntity<FullAdds> getFullAd(@PathVariable long id, Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
         FullAdds fullAdds = adsService.getFullAd(id);
         if (fullAdds == null) {
             return ResponseEntity.notFound().build();
@@ -147,7 +156,7 @@ public class AdsController {
 
     // -------------------------------------------------------------------------
     //РЕАЛИЗОВАНО ЧАСТИЧНО
-    @DeleteMapping("{id}")
+    @DeleteMapping("/ads/{id}")
     public ResponseEntity<?> removeAds(@PathVariable long id) {
         switch (adsService.removeAds(id)) {
             case 204:
@@ -191,7 +200,7 @@ public class AdsController {
     )
     // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/ads/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateAds(@PathVariable long id, @RequestBody CreateAds createAds) {
         int result = adsService.updateAds(id, createAds);
         switch (result) {
@@ -257,7 +266,7 @@ public class AdsController {
     )
 
     // РАБОТА С ККАРТИНКОЙ SPRINT5 ???
-    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/ads/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image) {
         adsService.updateAdsImage(id, image);
         return ResponseEntity.ok(null);
@@ -265,7 +274,7 @@ public class AdsController {
 
     // Поиск объявлений по подстроке в title с IgnoreCase
     // Параметр подстроки передается из формы фронтенд части, поэтому в будущем, @PathVariable скорее всего поменяется
-    @GetMapping("/findbytitle/{searchTitle}")
+    @GetMapping("/ads/findbytitle/{searchTitle}")
     public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
         return ResponseEntity.ok(
                 adsService.findByTitleContainingIgnoreCase(searchTitle)
