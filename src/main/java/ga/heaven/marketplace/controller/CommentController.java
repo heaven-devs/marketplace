@@ -82,7 +82,8 @@ public class CommentController {
         RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
         rq.setAdId(id);
         rq.setData(comment);
-        CommentDto rs = commentService.addComment(rq, authentication.getName());
+        rq.setUsername(authentication.getName());
+        CommentDto rs = commentService.addComment(rq);
 
         return ResponseEntity.ok(rs);
     }

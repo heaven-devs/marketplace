@@ -37,8 +37,7 @@ VALUES ('image', 5000, 'Good');
 -- changeset alrepin:2
 create table "mp_comments"
 (
-    id         BIGINT auto_increment
-        primary key,
+    id         BIGINT auto_increment primary key,
     created_at TIMESTAMP,
     text       CHARACTER VARYING(255),
     ads_id     BIGINT,
@@ -48,12 +47,12 @@ create table "mp_comments"
     constraint "FKm1uun165bcw52vv4krmem666a"
         foreign key (user_id) references "mp_users"
 );
-INSERT INTO "mp_comments" (id, created_at, text, ads_id, user_id)
-VALUES (1, '2023-04-28 06:46:29.000000', 'first comment', 1, 1);
-INSERT INTO "mp_comments" (id, created_at, text, ads_id, user_id)
-VALUES (2, '2023-04-28 07:46:29.000000', 'second comment', 1, 1);
-INSERT INTO "mp_comments" (id, created_at, text, ads_id, user_id)
-VALUES (3, '2023-04-28 08:46:29.000000', 'third comment', 1, 1);
+INSERT INTO "mp_comments" ("created_at", "text", "ads_id", "user_id")
+VALUES ('2023-04-28 06:46:29.000000', 'first comment', 1, 1);
+INSERT INTO "mp_comments" ("created_at", "text", "ads_id", "user_id")
+VALUES ('2023-04-28 07:46:29.000000', 'second comment', 1, 1);
+INSERT INTO "mp_comments" ("created_at", "text", "ads_id", "user_id")
+VALUES ('2023-04-28 08:46:29.000000', 'third comment', 1, 1);
 
 -- changeset alexTuraev:1
 ALTER TABLE "mp_ads"
