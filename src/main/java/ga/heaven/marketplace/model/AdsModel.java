@@ -24,6 +24,6 @@ public class AdsModel {
     @JoinColumn(name = "user_id")
     private UserModel user;
 
-    /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentModel> commentModels;*/
+    @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentModel> commentModels;
 }
