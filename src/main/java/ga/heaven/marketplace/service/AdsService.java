@@ -17,7 +17,7 @@ public interface AdsService {
 
     int removeAds(long id);
 
-    int updateAds(long id, CreateAds createAds);
+    Ads updateAds(long id, CreateAds createAds);
     
     List<Ads> getAdsMe(String username);
 

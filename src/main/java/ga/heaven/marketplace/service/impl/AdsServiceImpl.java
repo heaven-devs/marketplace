@@ -62,15 +62,14 @@ public class AdsServiceImpl implements AdsService {
     }
     
     @Override
-    public int updateAds(long id, CreateAds createAds) {
+    public Ads updateAds(long id, CreateAds createAds) {
         Optional<AdsModel> adsModelOptional = adsRepository.findById(id);
         if (adsModelOptional.isEmpty()) {
-            return 404;
+            return null;
         }
-        //AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(adsRepository.getById(id), createAds);
         AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(adsModelOptional.get(), createAds);
         adsRepository.save(adsModel);
-        return 0;
+        return AdsMapper.adsModelToAds(adsModel);
     }
     
     @Override
