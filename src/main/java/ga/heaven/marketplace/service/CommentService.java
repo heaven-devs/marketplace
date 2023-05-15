@@ -9,6 +9,8 @@ public interface CommentService {
     
     CommentDto addComment(RequestWrapperCommentDto rq);
     
+    boolean isMine(RequestWrapperCommentDto rq);
+    
     CommentDto deleteComment(RequestWrapperCommentDto rq);
 
     CommentDto updateComment(RequestWrapperCommentDto rq);

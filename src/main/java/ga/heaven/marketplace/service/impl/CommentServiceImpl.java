@@ -93,6 +93,16 @@ public class CommentServiceImpl implements CommentService {
     }
     
     @Override
+    public boolean isMine(RequestWrapperCommentDto rq) {
+        Long id = commentMapper.commentModelFromRequestWrapperDto(rq).getId();
+        CommentModel commentModel = findCommentById(id);
+        if (null == commentModel) {
+            return false;
+        }
+        return commentModel.getUser().getUsername().equals(rq.getUsername());
+    }
+    
+    @Override
     public CommentDto deleteComment(RequestWrapperCommentDto rq) {
         Long id = commentMapper.commentModelFromRequestWrapperDto(rq).getId();
         CommentModel commentModel = findCommentById(id);

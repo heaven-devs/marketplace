@@ -3,6 +3,8 @@ package ga.heaven.marketplace.controller;
 import ga.heaven.marketplace.dto.CommentDto;
 import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
 import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
+import ga.heaven.marketplace.model.AdsModel;
+import ga.heaven.marketplace.model.CommentModel;
 import ga.heaven.marketplace.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
+@CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RequestMapping("ads")
 public class CommentController {
     private final CommentService commentService;
@@ -24,7 +26,7 @@ public class CommentController {
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
-
+    
     @Operation(
             tags = "Комментарии",
             summary = "Получить комментарии объявления",
@@ -46,15 +48,10 @@ public class CommentController {
     )
     @GetMapping("{id}/comments")
     public ResponseEntity<?> getComments(@PathVariable Integer id, Authentication authentication) {
-        if (null == authentication) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
-        rq.setAdId(id);
-        ResponseWrapperCommentDto rs = commentService.getComments(rq);
-        return ResponseEntity.ok(rs);
+        checkAuth(authentication);
+        return ResponseEntity.ok(commentService.getComments(rq().setAdId(id)));
     }
-
+    
     @Operation(
             tags = "Комментарии",
             summary = "Добавить комментарий к объявлению",
@@ -76,18 +73,17 @@ public class CommentController {
     )
     @PostMapping(value = "{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addComment(@PathVariable Integer id, @RequestBody CommentDto comment, Authentication authentication) {
-        if (null == authentication) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
-        rq.setAdId(id);
-        rq.setData(comment);
-        rq.setUsername(authentication.getName());
-        CommentDto rs = commentService.addComment(rq);
-
-        return ResponseEntity.ok(rs);
+        checkAuth(authentication);
+        return ResponseEntity.ok(commentService
+                .addComment(
+                        rq()
+                                .setAdId(id)
+                                .setData(comment)
+                                .setUsername(authentication.getName())
+                )
+        );
     }
-
+    
     @Operation(
             tags = "Комментарии",
             summary = "Удалить комментарий",
@@ -111,21 +107,18 @@ public class CommentController {
     )
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId, Authentication authentication) {
-        if (null == authentication) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
+        checkAuth(authentication);
         CommentDto comment = new CommentDto();
-        rq.setAdId(adId);
         comment.setPk(commentId);
-        rq.setData(comment);
-        comment = commentService.deleteComment(rq);
-        if (null == comment) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        RequestWrapperCommentDto rq = rq()
+                .setAdId(adId)
+                .setData(comment)
+                .setUsername(authentication.getName());
+        comment = commentService.isMine(rq) ? commentService.deleteComment(rq) : null;
+        checkResult(comment);
         return ResponseEntity.ok(comment);
     }
-
+    
     @Operation(
             tags = "Комментарии",
             summary = "Обновить комментарий",
@@ -152,18 +145,31 @@ public class CommentController {
     )
     @PatchMapping("{adId}/comments/{commentId}")
     public ResponseEntity<?> updateComment(@PathVariable Integer adId, @PathVariable Integer commentId, @RequestBody CommentDto comment, Authentication authentication) {
-        if (null == authentication) {
+        checkAuth(authentication);
+        comment.setPk(commentId);
+        RequestWrapperCommentDto rq = rq()
+                .setAdId(adId)
+                .setData(comment)
+                .setUsername(authentication.getName());
+        comment = commentService.isMine(rq) ? commentService.updateComment(rq) : null;
+        checkResult(comment);
+        return ResponseEntity.ok(comment);
+    }
+    
+    private RequestWrapperCommentDto rq() {
+        return new RequestWrapperCommentDto();
+    }
+    
+    private void checkAuth(Authentication auth) {
+        if (null == auth) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        RequestWrapperCommentDto rq = new RequestWrapperCommentDto();
-        rq.setAdId(adId);
-        comment.setPk(commentId);
-        rq.setData(comment);
-        comment = commentService.updateComment(rq);
+    }
+    
+    private void checkResult(CommentDto comment) {
         if (null == comment) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        return ResponseEntity.ok(comment);
     }
-
+    
 }
