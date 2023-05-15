@@ -1,8 +1,10 @@
 package ga.heaven.marketplace.model;
 
 import lombok.Data;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "mp_ads")
@@ -17,7 +19,11 @@ public class AdsModel {
     private String contentType; // тип файла image
     private String description;
 
+    //@ManyToOne(cascade = CascadeType.ALL)
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserModel user;
+
+    @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentModel> commentModels;
 }

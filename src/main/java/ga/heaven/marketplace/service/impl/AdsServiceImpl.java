@@ -3,7 +3,7 @@ package ga.heaven.marketplace.service.impl;
 import ga.heaven.marketplace.dto.*;
 import ga.heaven.marketplace.mapper.AdsMapper;
 import ga.heaven.marketplace.model.AdsModel;
-import ga.heaven.marketplace.model.CommentModel;
+import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.repository.AdsRepository;
 import ga.heaven.marketplace.service.AdsService;
 import org.springframework.stereotype.Service;
@@ -16,10 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class AdsServiceImpl implements AdsService {
     private final AdsRepository adsRepository;
-    
+    private final UserServiceImpl userService;
+
     public AdsServiceImpl(
-            AdsRepository adsRepository) {
+            AdsRepository adsRepository, UserServiceImpl userService) {
         this.adsRepository = adsRepository;
+        this.userService = userService;
     }
     
     public ResponseWrapperAds getAds() {
@@ -36,9 +38,10 @@ public class AdsServiceImpl implements AdsService {
         return wrapperAds;
     }
     
-    public void addAds(CreateAds properties, MultipartFile image) {
+    public void addAds(CreateAds properties, MultipartFile image, String userName) {
         AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(properties);
-        // ДОБАВИТЬ ЛОГИКУ ПО IMAGE и по USER
+        // ДОБАВИТЬ ЛОГИКУ ПО IMAGE
+        adsModel.setUser(userService.getUser(userName));
         adsRepository.save(adsModel);
     }
     
@@ -59,20 +62,21 @@ public class AdsServiceImpl implements AdsService {
     }
     
     @Override
-    public int updateAds(long id, CreateAds createAds) {
+    public Ads updateAds(long id, CreateAds createAds) {
         Optional<AdsModel> adsModelOptional = adsRepository.findById(id);
         if (adsModelOptional.isEmpty()) {
-            return 404;
+            return null;
         }
-        //AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(adsRepository.getById(id), createAds);
         AdsModel adsModel = AdsMapper.CreateAdsToAdsModel(adsModelOptional.get(), createAds);
         adsRepository.save(adsModel);
-        return 0;
+        return AdsMapper.adsModelToAds(adsModel);
     }
     
     @Override
-    public List<Ads> getAdsMe() {
-        return null;
+    public List<Ads> getAdsMe(String username) {
+        UserModel user = userService.getUser(username);
+        List<AdsModel> adsModels = adsRepository.findAdsModelByUserId(user.getId());
+        return adsModels.stream().map(AdsMapper::adsModelToAds).collect(Collectors.toList());
     }
     
     @Override
@@ -84,5 +88,10 @@ public class AdsServiceImpl implements AdsService {
     public List<Ads> findByTitleContainingIgnoreCase(String searchTitle) {
         List<AdsModel> adsModels = adsRepository.findByTitleLikeIgnoreCase("%" + searchTitle + "%");
         return adsModels.stream().map(AdsMapper::adsModelToAds).collect(Collectors.toList());
+    }
+
+    @Override
+    public AdsModel getAdsById(long id) {
+        return adsRepository.findById(id).orElse(null);
     }
 }

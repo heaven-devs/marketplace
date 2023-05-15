@@ -65,7 +65,7 @@ public class CommentServiceImpl implements CommentService {
         if (adModelOptional.isEmpty()) {
             return null;
         }
-        UserModel userModel = userRepository.findById(userService.getCurrentUser().getId()).orElse(null);
+        UserModel userModel = userService.getUser(rq.getUsername());
 //        UserModel userModel = userMapper.mapUserDtoToUserModel(userService.getCurrentUser());
         CommentModel commentModel = commentMapper.commentModelFromRequestWrapperDto(rq);
         commentModel.setCreatedAt(LocalDateTime.now());
@@ -90,6 +90,16 @@ public class CommentServiceImpl implements CommentService {
     
     private CommentModel findCommentById(Long id) {
         return commentRepository.findById(id).orElse(null);
+    }
+    
+    @Override
+    public boolean isMine(RequestWrapperCommentDto rq) {
+        Long id = commentMapper.commentModelFromRequestWrapperDto(rq).getId();
+        CommentModel commentModel = findCommentById(id);
+        if (null == commentModel) {
+            return false;
+        }
+        return commentModel.getUser().getUsername().equals(rq.getUsername());
     }
     
     @Override

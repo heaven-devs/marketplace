@@ -10,5 +10,7 @@ import java.util.List;
 public interface AdsRepository extends JpaRepository<AdsModel, Long> {
     List<AdsModel> findByTitleLike(String s);
 
+    List<AdsModel> findAdsModelByUserId(Long id);
+
     List<AdsModel> findByTitleLikeIgnoreCase(String s);
 }
