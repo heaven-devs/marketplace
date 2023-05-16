@@ -50,12 +50,7 @@ public class UserController {
     )
     @GetMapping("/me")
     public ResponseEntity<?> getUser(Authentication authentication) {
-        if (null == authentication) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         UserDto authUser = userService.getCurrentUser(authentication.getName());
-        authUser.setImage(null);
         return ResponseEntity.ok(authUser);
     }
 
@@ -80,10 +75,6 @@ public class UserController {
     )
     @PatchMapping("/me")
     public ResponseEntity<?> updateUser(@RequestBody UserDto userDto, Authentication authentication) {
-        if (null == authentication) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         UserModel authUser = userService.getUser(authentication.getName());
         userService.updateUser(authUser, userDto);
         return ResponseEntity.ok(userDto);
@@ -112,14 +103,9 @@ public class UserController {
     )
     @PostMapping("/set_password")
     public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword, Authentication authentication) {
-
-        if (null == authentication) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         UserModel user = userService.getUser(authentication.getName());
         if (!userService.isPasswordCorrect(user, newPassword.currentPassword)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         UserDto modifiedUserDto = userService.setUserPassword(user, newPassword);
@@ -144,10 +130,6 @@ public class UserController {
     )
     @PatchMapping("/me/image")
     public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image, Authentication authentication) {
-        if (null == authentication) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         UserModel authUser = userService.getUser(authentication.getName());
         UserDto userDto = userService.loadUserImage(authUser, image);
         return ResponseEntity.ok(userDto);
