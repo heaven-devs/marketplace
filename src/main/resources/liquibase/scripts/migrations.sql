@@ -89,3 +89,4 @@ ALTER TABLE "mp_users" DROP COLUMN email;
 UPDATE "mp_users" SET password = '$2a$10$WI24YwtuGtKalv/bvXLQF.HIpGL4ncnnusPV8YU2.3dlpLlbPRgpO' WHERE password = '$2a$10$BzcMZENXkhcYEQrt5CDIyeZGIh0FPOyEb.xHNhwq8YD18o.TnpX6O'; --password
 UPDATE "mp_users" SET password = '$2a$10$f8lPzkPX0vgvuwDlsUb0JOgVP4ckHDq5u8et9nZNiQRjsEGgBU1nm' WHERE password = '$2a$10$FIruINDpbVd0WvOz51xCsOLunxMjp..KwrZ8R02xM2NNaor5R3zri'; --password2
 UPDATE "mp_users" SET password = '$2a$10$ewYVMeesx3hSpoOyDpxWSuC0YsVY.O1ybq9BiTCAH9vKLCABU.G02' WHERE password = '$2a$10$8AIWSRUhWxr/YwYPIwj2a.TghRfMJ2M/Sm05wO5s6VF7FC.otqOuG'; --password3
+CREATE SEQUENCE seq_users START WITH 4;

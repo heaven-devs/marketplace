@@ -11,7 +11,8 @@ import javax.persistence.*;
 public class UserModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
+    @SequenceGenerator(name = "users_id_seq", sequenceName = "seq_users",  allocationSize=1)
     private Long id;
     private String username;
     private String password;
@@ -21,5 +22,4 @@ public class UserModel {
     private Role role;
     private String image;
     private String contentType;
-
 }

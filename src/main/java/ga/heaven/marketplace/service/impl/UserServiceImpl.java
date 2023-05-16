@@ -1,6 +1,8 @@
 package ga.heaven.marketplace.service.impl;
 
 import ga.heaven.marketplace.dto.NewPassword;
+import ga.heaven.marketplace.dto.RegisterReq;
+import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.mapper.UserMapper;
 import ga.heaven.marketplace.model.UserModel;
@@ -9,6 +11,8 @@ import ga.heaven.marketplace.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -58,5 +62,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isPasswordCorrect(UserModel authUser, String currentPassword) {
         return passwordEncoder.matches(currentPassword, authUser.getPassword());
+    }
+
+    @Override
+    public void createUser(RegisterReq registerReq, Role role) {
+        UserModel userModel = mapper.mapRegisterReqToUserModel(registerReq, new UserModel());
+        userModel.setPassword(passwordEncoder.encode(registerReq.getPassword()));
+        userModel.setRole(Objects.requireNonNullElse(role, Role.USER));
+        repository.save(userModel);
     }
 }
