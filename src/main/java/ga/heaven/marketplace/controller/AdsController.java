@@ -3,6 +3,7 @@ package ga.heaven.marketplace.controller;
 import ga.heaven.marketplace.dto.*;
 import ga.heaven.marketplace.model.AdsModel;
 import ga.heaven.marketplace.service.AdsService;
+import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,9 +24,11 @@ import java.util.List;
 @RequestMapping("ads")
 public class AdsController {
     private final AdsService adsService;
+    private final UserService userService;
 
-    public AdsController(AdsService adsService) {
+    public AdsController(AdsService adsService, UserService userService) {
         this.adsService = adsService;
+        this.userService = userService;
     }
 
     @Operation(
@@ -233,10 +236,11 @@ public class AdsController {
 
         if (adsModel == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }else if (!adsModel.getUser().getUsername().equals(authentication.getName())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } else {
+        }else if (adsModel.getUser().getUsername().equals(authentication.getName()) ||
+                userService.getUser(authentication.getName()).getRole() == Role.ADMIN) {
             return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
     // -------------------------------------------------------------------------
