@@ -3,11 +3,14 @@ package ga.heaven.marketplace.mapper;
 import ga.heaven.marketplace.dto.CommentDto;
 import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
 import ga.heaven.marketplace.model.CommentModel;
+import ga.heaven.marketplace.model.ImageModel;
+import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 
 
 @Component
@@ -31,7 +34,10 @@ public class CommentMapper {
         CommentDto commentDto = new CommentDto();
         commentDto.setPk(Math.toIntExact(commentModel.getId()));
         commentDto.setAuthor(Math.toIntExact(commentModel.getUser().getId()));
-        commentDto.setAuthorImage(commentModel.getUser().getImage().getPath());
+        commentDto.setAuthorImage(Optional.ofNullable(commentModel.getUser())
+                        .map(UserModel::getImage)
+                        .map(ImageModel::getPath)
+                        .orElse(null));
         commentDto.setAuthorFirstName(commentModel.getUser().getFirstName());
 
 //        commentDto.setCreatedAt(Timestamp.valueOf(commentModel.getCreatedAt()).getTime());

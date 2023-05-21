@@ -77,10 +77,18 @@ public class AdsServiceImpl implements AdsService {
     }
     
     @Override
-    public List<Ads> getAdsMe(String username) {
+    public ResponseWrapperAds getAdsMe(String username) {
         UserModel user = userService.getUser(username);
         List<AdsModel> adsModels = adsRepository.findAdsModelByUserId(user.getId());
-        return adsModels.stream().map(adsMapper::adsModelToAds).collect(Collectors.toList());
+        ResponseWrapperAds wrapperAds = new ResponseWrapperAds();
+        wrapperAds.setCount(adsModels.size());
+        wrapperAds.setResults(
+                adsModels.stream()
+                        .map(adsMapper::adsModelToAds)
+                        .collect(Collectors.toList())
+        );
+        return wrapperAds;
+//        return adsModels.stream().map(adsMapper::adsModelToAds).collect(Collectors.toList());
     }
     
     @Override

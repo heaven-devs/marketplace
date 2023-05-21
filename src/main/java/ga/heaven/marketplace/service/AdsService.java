@@ -20,7 +20,7 @@ public interface AdsService {
 
     Ads updateAds(long id, CreateAds createAds);
     
-    List<Ads> getAdsMe(String username);
+    ResponseWrapperAds getAdsMe(String username);
 
     AdsModel updateAdsImage(AdsModel ad, ImageModel image);
     

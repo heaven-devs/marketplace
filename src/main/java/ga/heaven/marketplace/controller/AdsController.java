@@ -283,8 +283,9 @@ public class AdsController {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } else {
-            List<Ads> ads = adsService.getAdsMe(authentication.getName());
-            return ResponseEntity.ok(ads);
+            ResponseWrapperAds rs = adsService.getAdsMe(authentication.getName());
+//            List<Ads> ads = adsService.getAdsMe(authentication.getName());
+            return ResponseEntity.ok(rs);
         }
     }
 

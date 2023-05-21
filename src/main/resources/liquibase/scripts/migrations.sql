@@ -29,11 +29,6 @@ create table "mp_img"
     "size"       BIGINT
 );
 
-/*
-insert into "mp_img" ("image")
-values (null);
-*/
-
 -- changeset alexTuraev:1
 create table "mp_ads"
 (
