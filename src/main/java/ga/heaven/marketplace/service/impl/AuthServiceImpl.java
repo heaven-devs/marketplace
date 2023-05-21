@@ -4,7 +4,6 @@ import ga.heaven.marketplace.dto.RegisterReq;
 import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.security.UserDetailsManagerImpl;
 import ga.heaven.marketplace.service.AuthService;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,10 +13,13 @@ public class AuthServiceImpl implements AuthService {
 
   private final UserDetailsManagerImpl manager;
 
+  private final UserServiceImpl service;
+
   private final PasswordEncoder encoder;
 
-  public AuthServiceImpl(UserDetailsManagerImpl manager, PasswordEncoder passwordEncoder) {
+  public AuthServiceImpl(UserDetailsManagerImpl manager, UserServiceImpl service, PasswordEncoder passwordEncoder) {
     this.manager = manager;
+    this.service = service;
     this.encoder = passwordEncoder;
   }
 
@@ -35,13 +37,8 @@ public class AuthServiceImpl implements AuthService {
     if (manager.userExists(registerReq.getUsername())) {
       return false;
     }
-    manager.createUser(
-        User.builder()
-            .passwordEncoder(this.encoder::encode)
-            .password(registerReq.getPassword())
-            .username(registerReq.getUsername())
-            .roles(role.name())
-            .build());
+
+    service.createUser(registerReq, role);
     return true;
   }
 }
