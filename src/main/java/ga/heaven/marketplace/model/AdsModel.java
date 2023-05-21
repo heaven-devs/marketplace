@@ -1,7 +1,6 @@
 package ga.heaven.marketplace.model;
 
 import lombok.Data;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,10 +12,13 @@ public class AdsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;       // id объявления
-    private String image; // ссылка на картинку объявления
+    //cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE}
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "img_id")
+    private ImageModel image; // ссылка на картинку объявления
     private int price;    // цена объявления
     private String title; // заголовок объявления
-    private String contentType; // тип файла image
+    //private String contentType; // тип файла image
     private String description;
 
     //@ManyToOne(cascade = CascadeType.ALL)

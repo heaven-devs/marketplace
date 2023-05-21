@@ -5,13 +5,14 @@ import ga.heaven.marketplace.dto.CreateAds;
 import ga.heaven.marketplace.dto.FullAdds;
 import ga.heaven.marketplace.dto.ResponseWrapperAds;
 import ga.heaven.marketplace.model.AdsModel;
+import ga.heaven.marketplace.model.ImageModel;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface AdsService {
     ResponseWrapperAds getAds();
-    void addAds(CreateAds properties, MultipartFile image, String userName);
+    Ads addAds(CreateAds properties, ImageModel image, String userName);
     
     FullAdds getFullAd(long id);
 
@@ -21,8 +22,8 @@ public interface AdsService {
     
     List<Ads> getAdsMe(String username);
 
-    int updateAdsImage(int id, MultipartFile image);
-
+    AdsModel updateAdsImage(AdsModel ad, ImageModel image);
+    
     List<Ads> findByTitleContainingIgnoreCase(String searchTitle);
 
     AdsModel getAdsById(long id);

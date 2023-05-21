@@ -31,7 +31,7 @@ public class CommentMapper {
         CommentDto commentDto = new CommentDto();
         commentDto.setPk(Math.toIntExact(commentModel.getId()));
         commentDto.setAuthor(Math.toIntExact(commentModel.getUser().getId()));
-        commentDto.setAuthorImage(commentModel.getUser().getImage());
+        commentDto.setAuthorImage(commentModel.getUser().getImage().getPath());
         commentDto.setAuthorFirstName(commentModel.getUser().getFirstName());
 
 //        commentDto.setCreatedAt(Timestamp.valueOf(commentModel.getCreatedAt()).getTime());

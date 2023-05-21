@@ -2,13 +2,16 @@ package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.*;
 import ga.heaven.marketplace.model.AdsModel;
+import ga.heaven.marketplace.model.ImageModel;
 import ga.heaven.marketplace.service.AdsService;
+import ga.heaven.marketplace.service.ImageService;
 import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +20,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
-@RequestMapping("ads")
+@CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
+@RequestMapping("/ads")
 public class AdsController {
     private final AdsService adsService;
+    private final ImageService imageService;
     private final UserService userService;
-
-    public AdsController(AdsService adsService, UserService userService) {
+    
+    public AdsController(AdsService adsService, ImageService imageService, UserService userService) {
         this.adsService = adsService;
+        this.imageService = imageService;
         this.userService = userService;
     }
-
+    
     @Operation(
             tags = "Объявления",
             summary = "Получить все объявления",
@@ -53,7 +59,7 @@ public class AdsController {
         return ResponseEntity.ok(rs);
     }
     // ---------------------------------------------------------------------------
-
+    
     @Operation(
             tags = "Объявления",
             summary = "Добавить объявление",
@@ -83,17 +89,24 @@ public class AdsController {
                     )
             }
     )
-
+    
     // -------------------------------------------------------------------------
-    // РЕАЛИЗОВАНО ЧАСТИЧНО
-    //@PostMapping(name="/newAd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SneakyThrows
+    @Transactional
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addAds(@RequestPart CreateAds properties, @RequestPart MultipartFile image, Authentication authentication) {
+    public ResponseEntity<?> addAds(@RequestPart("properties") CreateAds properties,
+                                    @RequestPart("image") MultipartFile imageFile,
+                                    Authentication authentication) {
         if (null == authentication) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        adsService.addAds(properties, image, authentication.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    
+        ImageModel uploadedImage = imageService.upload(imageFile);
+        ImageModel savedImage = imageService.save(uploadedImage);
+        
+        Ads ads = adsService.addAds(properties, savedImage, authentication.getName());
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(ads);
     }
     // -------------------------------------------------------------------------
 
@@ -294,9 +307,19 @@ public class AdsController {
                     )
             }
     )
-
-    // РАБОТА С ККАРТИНКОЙ SPRINT5 ???
+    @SneakyThrows
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateAdsImage(@PathVariable int id,
+                                            @RequestPart("image") MultipartFile imageFile,
+                                            Authentication authentication) {
+        if (null == authentication) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        ImageModel image = imageService.upload(imageFile);
+        AdsModel ads = adsService.getAdsById(id);
+        return ResponseEntity.ok(adsService.updateAdsImage(ads, image).getImage().getImage());
+    }
+    /*@PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image, Authentication authentication) {
         if (null == authentication) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -304,7 +327,7 @@ public class AdsController {
 
         adsService.updateAdsImage(id, image);
         return ResponseEntity.ok(null);
-    }
+    }*/
 
     // Поиск объявлений по подстроке в title с IgnoreCase
     // Параметр подстроки передается из формы фронтенд части, поэтому в будущем, @PathVariable скорее всего поменяется

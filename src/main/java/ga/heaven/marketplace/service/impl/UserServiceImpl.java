@@ -5,6 +5,7 @@ import ga.heaven.marketplace.dto.RegisterReq;
 import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.mapper.UserMapper;
+import ga.heaven.marketplace.model.ImageModel;
 import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.repository.UserRepository;
 import ga.heaven.marketplace.service.UserService;
@@ -52,9 +53,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto loadUserImage(UserModel authUser, MultipartFile image) {
-        authUser.setImage(image.toString());
-        authUser.setContentType(image.getContentType());
+    public UserDto loadUserImage(UserModel authUser, ImageModel image) {
+        authUser.setImage(image);
+        //authUser.setContentType(image.getContentType());
         repository.save(authUser);
         return mapper.mapToUserDto(authUser);
     }

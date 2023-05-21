@@ -1,0 +1,19 @@
+POST http://localhost:8080/ads
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="image"; filename="img.jpg"
+Content-Type: application/octet-stream
+
+< ./img.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="properties"
+Content-Type: application/json
+
+{
+"description": "Best of the best, better than the best",
+"price": 100,
+"title": "mem"
+}
+
+--WebAppBoundary--

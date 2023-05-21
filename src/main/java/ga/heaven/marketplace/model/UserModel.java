@@ -20,6 +20,8 @@ public class UserModel {
     private String lastName;
     private String phone;
     private Role role;
-    private String image;
-    private String contentType;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "img_id")
+    private ImageModel image; // ссылка на картинку объявления
+    //private String contentType;
 }
