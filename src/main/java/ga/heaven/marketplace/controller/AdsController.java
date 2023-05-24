@@ -97,9 +97,9 @@ public class AdsController {
     public ResponseEntity<?> addAds(@RequestPart("properties") CreateAds properties,
                                     @RequestPart("image") MultipartFile imageFile,
                                     Authentication authentication) {
-        if (null == authentication) {
+       /* if (null == authentication) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        }*/
     
         ImageModel uploadedImage = imageService.upload(imageFile);
         ImageModel savedImage = imageService.save(uploadedImage);
@@ -241,9 +241,9 @@ public class AdsController {
     // -------------------------------------------------------------------------
 
     private ResponseEntity<?> accessResponse(Authentication authentication, Long id) {
-        if (null == authentication) {
+        /*if (null == authentication) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        }*/
 
         AdsModel adsModel = adsService.getAdsById(id);
 
@@ -313,9 +313,9 @@ public class AdsController {
     public ResponseEntity<?> updateAdsImage(@PathVariable int id,
                                             @RequestPart("image") MultipartFile imageFile,
                                             Authentication authentication) {
-        if (null == authentication) {
+/*        if (null == authentication) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        }*/
         ImageModel image = imageService.upload(imageFile);
         AdsModel ads = adsService.getAdsById(id);
         return ResponseEntity.ok(adsService.updateAdsImage(ads, image).getImage().getImage());

@@ -3,9 +3,9 @@ package ga.heaven.marketplace.controller;
 import ga.heaven.marketplace.dto.CommentDto;
 import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
 import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
-import ga.heaven.marketplace.model.AdsModel;
-import ga.heaven.marketplace.model.CommentModel;
+import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.service.CommentService;
+import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,8 +23,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class CommentController {
     private final CommentService commentService;
     
-    public CommentController(CommentService commentService) {
+    private final UserService userService;
+    public CommentController(CommentService commentService, UserService userService) {
         this.commentService = commentService;
+        this.userService = userService;
     }
     
     @Operation(
@@ -48,7 +50,7 @@ public class CommentController {
     )
     @GetMapping("{id}/comments")
     public ResponseEntity<?> getComments(@PathVariable Integer id, Authentication authentication) {
-        checkAuth(authentication);
+        //checkAuth(authentication);
         return ResponseEntity.ok(commentService.getComments(rq().setAdId(id)));
     }
     
@@ -73,7 +75,7 @@ public class CommentController {
     )
     @PostMapping(value = "{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addComment(@PathVariable Integer id, @RequestBody CommentDto comment, Authentication authentication) {
-        checkAuth(authentication);
+        //checkAuth(authentication);
         return ResponseEntity.ok(commentService
                 .addComment(
                         rq()
@@ -107,14 +109,14 @@ public class CommentController {
     )
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId, Authentication authentication) {
-        checkAuth(authentication);
+        //checkAuth(authentication);
         CommentDto comment = new CommentDto();
         comment.setPk(commentId);
         RequestWrapperCommentDto rq = rq()
                 .setAdId(adId)
                 .setData(comment)
                 .setUsername(authentication.getName());
-        comment = commentService.isMine(rq) ? commentService.deleteComment(rq) : null;
+        comment = commentService.isMine(rq) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.deleteComment(rq) : null;
         checkResult(comment);
         return ResponseEntity.ok(comment);
     }
@@ -145,13 +147,13 @@ public class CommentController {
     )
     @PatchMapping("{adId}/comments/{commentId}")
     public ResponseEntity<?> updateComment(@PathVariable Integer adId, @PathVariable Integer commentId, @RequestBody CommentDto comment, Authentication authentication) {
-        checkAuth(authentication);
+        //checkAuth(authentication);
         comment.setPk(commentId);
         RequestWrapperCommentDto rq = rq()
                 .setAdId(adId)
                 .setData(comment)
                 .setUsername(authentication.getName());
-        comment = commentService.isMine(rq) ? commentService.updateComment(rq) : null;
+        comment = commentService.isMine(rq) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.updateComment(rq) : null;
         checkResult(comment);
         return ResponseEntity.ok(comment);
     }

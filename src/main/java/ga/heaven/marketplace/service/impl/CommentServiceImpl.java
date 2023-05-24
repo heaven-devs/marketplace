@@ -66,7 +66,6 @@ public class CommentServiceImpl implements CommentService {
             return null;
         }
         UserModel userModel = userService.getUser(rq.getUsername());
-//        UserModel userModel = userMapper.mapUserDtoToUserModel(userService.getCurrentUser());
         CommentModel commentModel = commentMapper.commentModelFromRequestWrapperDto(rq);
         commentModel.setCreatedAt(LocalDateTime.now());
         commentModel.setUser(userModel);
@@ -101,6 +100,7 @@ public class CommentServiceImpl implements CommentService {
         }
         return commentModel.getUser().getUsername().equals(rq.getUsername());
     }
+    
     
     @Override
     public CommentDto deleteComment(RequestWrapperCommentDto rq) {
