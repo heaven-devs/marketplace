@@ -169,10 +169,10 @@ public class AdController {
         ResponseEntity<?> response = accessResponse(authentication, id);
 
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
-            return response; // UNAUTHORIZED, FORBIDDEN or NO_CONTENT
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
             adsService.removeAds(id);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
     }
     // -------------------------------------------------------------------------
@@ -290,15 +290,6 @@ public class AdController {
         AdModel ads = adsService.getAdsById(id);
         return ResponseEntity.ok(adsService.updateAdsImage(ads, image).getImage().getImage());
     }
-    /*@PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image, Authentication authentication) {
-        if (null == authentication) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
-        adsService.updateAdsImage(id, image);
-        return ResponseEntity.ok(null);
-    }*/
 
     // Поиск объявлений по подстроке в title с IgnoreCase
     // Параметр подстроки передается из формы фронтенд части, поэтому в будущем, @PathVariable скорее всего поменяется
