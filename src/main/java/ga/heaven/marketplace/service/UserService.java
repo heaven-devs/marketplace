@@ -4,6 +4,7 @@ import ga.heaven.marketplace.dto.NewPassword;
 import ga.heaven.marketplace.dto.RegisterReq;
 import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.dto.UserDto;
+import ga.heaven.marketplace.model.ImageModel;
 import ga.heaven.marketplace.model.UserModel;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +18,7 @@ public interface UserService {
 
     UserDto setUserPassword(UserModel authUser, NewPassword newPassword);
 
-    UserDto loadUserImage(UserModel authUser, MultipartFile image);
+    UserDto loadUserImage(UserModel authUser, ImageModel image);
 
     boolean isPasswordCorrect(UserModel authUser, String currentPassword);
 

@@ -4,9 +4,11 @@ import ga.heaven.marketplace.dto.Ads;
 import ga.heaven.marketplace.dto.CreateAds;
 import ga.heaven.marketplace.dto.FullAdds;
 import ga.heaven.marketplace.model.AdsModel;
+import org.springframework.stereotype.Component;
 
 //@Mapper
 //public interface AdsMapper {
+@Component
 public class AdsMapper {
     //AdsMapper INSTANCE = Mappers.getMapper( AdsMapper.class );
 
@@ -14,11 +16,11 @@ public class AdsMapper {
     @Mapping(target = "author", expression = "java(this.getUser().getId())")
     Ads adsModelToAds(AdsModel adsModel);*/
 
-    public static Ads adsModelToAds(AdsModel adsModel){
+    public Ads adsModelToAds(AdsModel adsModel){
         Ads ads = new Ads();
         ads.setAuthor(adsModel.getUser().getId());
-        ads.setImage(null);
-        //ads.setImage(adsModel.getImage());
+        //ads.setImage(null);
+        ads.setImage(adsModel.getImage().getPath());
         ads.setPk(adsModel.getId());
         ads.setPrice(adsModel.getPrice());
         ads.setTitle(adsModel.getTitle());
@@ -26,7 +28,7 @@ public class AdsMapper {
         return ads;
     }
 
-    public static FullAdds adsModelToFullAdds(AdsModel adsModel) {
+    public FullAdds adsModelToFullAdds(AdsModel adsModel) {
         if (adsModel == null) {
             return null;
         }
@@ -36,14 +38,14 @@ public class AdsMapper {
         fullAdds.setAuthorLastName(adsModel.getUser().getLastName());
         fullAdds.setDescription(adsModel.getDescription());
         fullAdds.setEmail(adsModel.getUser().getUsername());
-        fullAdds.setImage(adsModel.getImage());
+        fullAdds.setImage(adsModel.getImage().getPath());
         fullAdds.setPhone(adsModel.getUser().getPhone());
         fullAdds.setPrice((adsModel.getPrice()));
         fullAdds.setTitle(adsModel.getTitle());
         return fullAdds;
     }
 
-    public static AdsModel CreateAdsToAdsModel(CreateAds createAds) {
+    public AdsModel CreateAdsToAdsModel(CreateAds createAds) {
         if (createAds == null) {
             throw new RuntimeException("Неясно что делать, если createAds == null");
         }
@@ -54,7 +56,7 @@ public class AdsMapper {
         return adsModel;
     }
 
-    public static AdsModel CreateAdsToAdsModel(AdsModel adsModel, CreateAds createAds){
+    public AdsModel CreateAdsToAdsModel(AdsModel adsModel, CreateAds createAds){
         adsModel.setDescription(createAds.getDescription());
         adsModel.setPrice(createAds.getPrice());
         adsModel.setTitle(createAds.getTitle());

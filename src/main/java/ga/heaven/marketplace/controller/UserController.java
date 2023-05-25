@@ -3,11 +3,13 @@ package ga.heaven.marketplace.controller;
 import ga.heaven.marketplace.dto.NewPassword;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.model.UserModel;
+import ga.heaven.marketplace.service.ImageService;
 import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,9 +26,11 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
+    private final ImageService imageService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ImageService imageService) {
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     @Operation(
@@ -128,10 +132,11 @@ public class UserController {
                     )
             }
     )
+    @SneakyThrows
     @PatchMapping("/me/image")
     public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image, Authentication authentication) {
         UserModel authUser = userService.getUser(authentication.getName());
-        UserDto userDto = userService.loadUserImage(authUser, image);
+        UserDto userDto = userService.loadUserImage(authUser, imageService.upload(image));
         return ResponseEntity.ok(userDto);
     }
 }

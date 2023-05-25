@@ -3,8 +3,11 @@ package ga.heaven.marketplace.mapper;
 import ga.heaven.marketplace.dto.LoginReq;
 import ga.heaven.marketplace.dto.RegisterReq;
 import ga.heaven.marketplace.dto.UserDto;
+import ga.heaven.marketplace.model.ImageModel;
 import ga.heaven.marketplace.model.UserModel;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class UserMapper {
@@ -15,7 +18,9 @@ public class UserMapper {
         dto.setFirstName(userModel.getFirstName());
         dto.setLastName(userModel.getLastName());
         dto.setPhone(userModel.getPhone());
-        dto.setImage(userModel.getImage());
+        dto.setImage(Optional.ofNullable(userModel.getImage())
+                .map(ImageModel::getPath)
+                .orElse(null));
         return dto;
     }
     
@@ -29,7 +34,7 @@ public class UserMapper {
         userModel.setFirstName(userDto.getFirstName());
         userModel.setLastName(userDto.getLastName());
         userModel.setPhone(userDto.getPhone());
-        userModel.setImage(userDto.getImage());
+        //userModel.setImage(userDto.getImage());
         return userModel;
     }
 
