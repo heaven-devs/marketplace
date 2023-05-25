@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.*;
-import ga.heaven.marketplace.model.AdsModel;
+import ga.heaven.marketplace.model.AdModel;
 import ga.heaven.marketplace.model.ImageModel;
 import ga.heaven.marketplace.service.AdsService;
 import ga.heaven.marketplace.service.ImageService;
@@ -18,20 +18,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RequestMapping("/ads")
-public class AdsController {
+public class AdController {
     private final AdsService adsService;
     private final ImageService imageService;
     private final UserService userService;
     
-    public AdsController(AdsService adsService, ImageService imageService, UserService userService) {
+    public AdController(AdsService adsService, ImageService imageService, UserService userService) {
         this.adsService = adsService;
         this.imageService = imageService;
         this.userService = userService;
@@ -69,7 +67,7 @@ public class AdsController {
                             description = "Created",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Ads.class)
+                                    schema = @Schema(implementation = AdDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -94,7 +92,7 @@ public class AdsController {
     @SneakyThrows
     @Transactional
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addAds(@RequestPart("properties") CreateAds properties,
+    public ResponseEntity<?> addAds(@RequestPart("properties") CreateAdDto properties,
                                     @RequestPart("image") MultipartFile imageFile,
                                     Authentication authentication) {
        /* if (null == authentication) {
@@ -104,9 +102,9 @@ public class AdsController {
         ImageModel uploadedImage = imageService.upload(imageFile);
         ImageModel savedImage = imageService.save(uploadedImage);
         
-        Ads ads = adsService.addAds(properties, savedImage, authentication.getName());
+        AdDto adDto = adsService.addAds(properties, savedImage, authentication.getName());
         
-        return ResponseEntity.status(HttpStatus.CREATED).body(ads);
+        return ResponseEntity.status(HttpStatus.CREATED).body(adDto);
     }
     // -------------------------------------------------------------------------
 
@@ -140,16 +138,6 @@ public class AdsController {
         FullAdds fullAdds = adsService.getFullAd(id);
         return ResponseEntity.ok(fullAdds);
 
-
-        // Хотелось сделать так, чтобы не позволять смотреть чужие объявления. В спецификации стоит статус OK
-        /*if (fullAdds == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            if (fullAdds.getEmail() != authentication.getName()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            return ResponseEntity.ok(fullAdds);
-        }*/
     }
     // -------------------------------------------------------------------------
 
@@ -208,7 +196,7 @@ public class AdsController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Ads.class)
+                                    schema = @Schema(implementation = AdDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -226,7 +214,7 @@ public class AdsController {
     // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО Спринт4
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateAds(@PathVariable long id, @RequestBody CreateAds createAds, Authentication authentication) {
+    public ResponseEntity<?> updateAds(@PathVariable long id, @RequestBody CreateAdDto createAdDto, Authentication authentication) {
 
         ResponseEntity<?> response = accessResponse(authentication, id);
 
@@ -234,8 +222,8 @@ public class AdsController {
             //return response; // UNAUTHORIZED or FORBIDDEN   // в этом случае подхватывается и NO_CONTENT
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            Ads ads = adsService.updateAds(id, createAds);
-            return ResponseEntity.ok(ads);
+            AdDto adDto = adsService.updateAds(id, createAdDto);
+            return ResponseEntity.ok(adDto);
         }
     }
     // -------------------------------------------------------------------------
@@ -245,11 +233,11 @@ public class AdsController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }*/
 
-        AdsModel adsModel = adsService.getAdsById(id);
+        AdModel adModel = adsService.getAdsById(id);
 
-        if (adsModel == null) {
+        if (adModel == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }else if (adsModel.getUser().getUsername().equals(authentication.getName()) ||
+        }else if (adModel.getUser().getUsername().equals(authentication.getName()) ||
                 userService.getUser(authentication.getName()).getRole() == Role.ADMIN) {
             return ResponseEntity.ok().build();
         } else {
@@ -317,7 +305,7 @@ public class AdsController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }*/
         ImageModel image = imageService.upload(imageFile);
-        AdsModel ads = adsService.getAdsById(id);
+        AdModel ads = adsService.getAdsById(id);
         return ResponseEntity.ok(adsService.updateAdsImage(ads, image).getImage().getImage());
     }
     /*@PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
