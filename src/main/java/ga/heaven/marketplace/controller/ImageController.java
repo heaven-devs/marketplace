@@ -14,9 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static ga.heaven.marketplace.config.Constants.*;
+
 @RestController
 @CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
-@RequestMapping("img")
+@RequestMapping(IMG_RM)
 public class ImageController {
     private final ImageService imageService;
     

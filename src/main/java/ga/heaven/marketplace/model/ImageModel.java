@@ -5,6 +5,8 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
+import static ga.heaven.marketplace.config.Constants.IMG_RM;
+
 @Entity
 @Table(name = "mp_img")
 @NoArgsConstructor
@@ -28,6 +30,6 @@ public class ImageModel {
     private String mediaType;
     
     public String getPath() {
-        return "/img/" + this.getId();
+        return IMG_RM + "/" + this.getId();
     }
 }

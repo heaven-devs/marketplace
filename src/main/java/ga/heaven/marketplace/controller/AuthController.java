@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static ga.heaven.marketplace.config.Constants.*;
+
 @Slf4j
 @CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RestController
@@ -50,7 +52,7 @@ public class AuthController {
                     )
             }
     )
-    @PostMapping("/login")
+    @PostMapping(LOGIN_RM)
     public ResponseEntity<?> login(@RequestBody LoginReq req) {
         if (authService.login(req.getUsername(), req.getPassword())) {
             return ResponseEntity.ok().build();
@@ -86,7 +88,7 @@ public class AuthController {
                     )
             }
     )
-    @PostMapping("/register")
+    @PostMapping(REGISTER_RM)
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? Role.USER : req.getRole();
         if (authService.register(req, role)) {

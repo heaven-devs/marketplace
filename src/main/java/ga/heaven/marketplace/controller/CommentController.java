@@ -17,9 +17,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import static ga.heaven.marketplace.config.Constants.*;
+
 @RestController
 @CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
-@RequestMapping("ads")
+@RequestMapping(AD_RM)
 public class CommentController {
     private final CommentService commentService;
     

@@ -21,9 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
+import static ga.heaven.marketplace.config.Constants.*;
+
 @RestController
 @CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
-@RequestMapping("/ads")
+@RequestMapping(AD_RM)
 public class AdController {
     private final AdsService adsService;
     private final ImageService imageService;
