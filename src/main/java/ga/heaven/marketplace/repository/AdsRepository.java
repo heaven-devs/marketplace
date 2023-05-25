@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+//@Repository
 public interface AdsRepository extends JpaRepository<AdsModel, Long> {
     List<AdsModel> findByTitleLike(String s);
 

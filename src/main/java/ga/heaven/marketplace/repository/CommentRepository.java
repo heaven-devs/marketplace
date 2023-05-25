@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public interface CommentRepository extends JpaRepository<CommentModel, Long> {
     Optional<CommentModel> findDistinctFirstByTextEqualsAndUserEqualsAndAdsEquals(String text, UserModel user, AdsModel ads);
     List<CommentModel> findAllByAds_Id(Long ads_id);
