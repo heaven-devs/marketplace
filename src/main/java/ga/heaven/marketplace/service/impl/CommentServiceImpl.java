@@ -2,13 +2,13 @@ package ga.heaven.marketplace.service.impl;
 
 import ga.heaven.marketplace.dto.CommentDto;
 import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
-import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
+import ga.heaven.marketplace.dto.ResponseWrapperCommentsDto;
 import ga.heaven.marketplace.mapper.CommentMapper;
 import ga.heaven.marketplace.mapper.UserMapper;
 import ga.heaven.marketplace.model.AdModel;
 import ga.heaven.marketplace.model.CommentModel;
 import ga.heaven.marketplace.model.UserModel;
-import ga.heaven.marketplace.repository.AdsRepository;
+import ga.heaven.marketplace.repository.AdRepository;
 import ga.heaven.marketplace.repository.CommentRepository;
 import ga.heaven.marketplace.repository.UserRepository;
 import ga.heaven.marketplace.service.CommentService;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
-    private final AdsRepository adRepository;
+    private final AdRepository adRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final UserService userService;
@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
     private final UserMapper userMapper;
     
     public CommentServiceImpl(
-            AdsRepository adRepository,
+            AdRepository adRepository,
             CommentRepository commentRepository,
             UserRepository userRepository, UserService userService,
             CommentMapper commentMapper,
@@ -44,10 +44,10 @@ public class CommentServiceImpl implements CommentService {
     }
     
     @Override
-    public ResponseWrapperCommentDto getComments(RequestWrapperCommentDto rq) {
+    public ResponseWrapperCommentsDto getComments(RequestWrapperCommentDto rq) {
         List<CommentModel> commentList = commentRepository
                 .findAllByAds_Id(commentMapper.adIdFromRequestWrapperDto(rq));
-        ResponseWrapperCommentDto wrapperComment = new ResponseWrapperCommentDto();
+        ResponseWrapperCommentsDto wrapperComment = new ResponseWrapperCommentsDto();
         wrapperComment.setCount(commentList.size());
         wrapperComment.setResults(
                 commentList.stream()

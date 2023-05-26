@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.controller;
 
-import ga.heaven.marketplace.dto.LoginReq;
-import ga.heaven.marketplace.dto.RegisterReq;
+import ga.heaven.marketplace.dto.LoginReqDto;
+import ga.heaven.marketplace.dto.RegisterReqDto;
 import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,7 +43,7 @@ public class AuthController {
             }
     )
     @PostMapping(LOGIN_RM)
-    public ResponseEntity<?> login(@RequestBody LoginReq req) {
+    public ResponseEntity<?> login(@RequestBody LoginReqDto req) {
         if (authService.login(req.getUsername(), req.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
@@ -64,7 +64,7 @@ public class AuthController {
             }
     )
     @PostMapping(REGISTER_RM)
-    public ResponseEntity<?> register(@RequestBody RegisterReq req) {
+    public ResponseEntity<?> register(@RequestBody RegisterReqDto req) {
         Role role = req.getRole() == null ? Role.USER : req.getRole();
         if (authService.register(req, role)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();

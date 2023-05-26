@@ -3,7 +3,7 @@ package ga.heaven.marketplace.controller;
 import ga.heaven.marketplace.dto.*;
 import ga.heaven.marketplace.model.AdModel;
 import ga.heaven.marketplace.model.ImageModel;
-import ga.heaven.marketplace.service.AdsService;
+import ga.heaven.marketplace.service.AdService;
 import ga.heaven.marketplace.service.ImageService;
 import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,12 +27,12 @@ import static ga.heaven.marketplace.config.Constants.*;
 @CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RequestMapping(AD_RM)
 public class AdController {
-    private final AdsService adsService;
+    private final AdService adService;
     private final ImageService imageService;
     private final UserService userService;
     
-    public AdController(AdsService adsService, ImageService imageService, UserService userService) {
-        this.adsService = adsService;
+    public AdController(AdService adService, ImageService imageService, UserService userService) {
+        this.adService = adService;
         this.imageService = imageService;
         this.userService = userService;
     }
@@ -46,7 +46,7 @@ public class AdController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ResponseWrapperAds.class)
+                                    schema = @Schema(implementation = ResponseWrapperAdsDto.class)
                             )
                     )
             }
@@ -55,7 +55,7 @@ public class AdController {
     // РЕАЛИЗОВАНО
     @GetMapping
     public ResponseEntity<?> getAds() {
-        ResponseWrapperAds rs = adsService.getAds();
+        ResponseWrapperAdsDto rs = adService.getAds();
         return ResponseEntity.ok(rs);
     }
     // ---------------------------------------------------------------------------
@@ -97,14 +97,11 @@ public class AdController {
     public ResponseEntity<?> addAds(@RequestPart("properties") CreateAdDto properties,
                                     @RequestPart("image") MultipartFile imageFile,
                                     Authentication authentication) {
-       /* if (null == authentication) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }*/
     
         ImageModel uploadedImage = imageService.upload(imageFile);
         ImageModel savedImage = imageService.save(uploadedImage);
         
-        AdDto adDto = adsService.addAds(properties, savedImage, authentication.getName());
+        AdDto adDto = adService.addAds(properties, savedImage, authentication.getName());
         
         return ResponseEntity.status(HttpStatus.CREATED).body(adDto);
     }
@@ -119,7 +116,7 @@ public class AdController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = FullAdds.class)
+                                    schema = @Schema(implementation = FullAdDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -132,13 +129,13 @@ public class AdController {
     // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО. Спринт 4
     @GetMapping("/{id}")
-    public ResponseEntity<FullAdds> getFullAd(@PathVariable long id, Authentication authentication) {
+    public ResponseEntity<FullAdDto> getFullAd(@PathVariable long id, Authentication authentication) {
         if (null == authentication) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        FullAdds fullAdds = adsService.getFullAd(id);
-        return ResponseEntity.ok(fullAdds);
+        FullAdDto fullAdDto = adService.getFullAd(id);
+        return ResponseEntity.ok(fullAdDto);
 
     }
     // -------------------------------------------------------------------------
@@ -168,24 +165,15 @@ public class AdController {
     // -------------------------------------------------------------------------
     //РЕАЛИЗОВАНО Спрринт4 (ПРОВЕРИТЬ УДАЛЕНИЕ, FORBIDDEN РАБОТАЕТ)
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeAds(@PathVariable long id, Authentication authentication) {
+    public ResponseEntity<?> removeAd(@PathVariable long id, Authentication authentication) {
         ResponseEntity<?> response = accessResponse(authentication, id);
 
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
-            return response; // UNAUTHORIZED, FORBIDDEN or NO_CONTENT
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            adsService.removeAds(id);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            adService.removeAd(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-
-        /*switch (adsService.removeAds(id)) {
-            case 204:
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            case 0:
-                return ResponseEntity.status(HttpStatus.OK).build();
-            default:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }*/
     }
     // -------------------------------------------------------------------------
 
@@ -216,26 +204,21 @@ public class AdController {
     // -------------------------------------------------------------------------
     // РЕАЛИЗОВАНО Спринт4
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateAds(@PathVariable long id, @RequestBody CreateAdDto createAdDto, Authentication authentication) {
+    public ResponseEntity<?> updateAd(@PathVariable long id, @RequestBody CreateAdDto createAdDto, Authentication authentication) {
 
         ResponseEntity<?> response = accessResponse(authentication, id);
 
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
-            //return response; // UNAUTHORIZED or FORBIDDEN   // в этом случае подхватывается и NO_CONTENT
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            AdDto adDto = adsService.updateAds(id, createAdDto);
+            AdDto adDto = adService.updateAd(id, createAdDto);
             return ResponseEntity.ok(adDto);
         }
     }
     // -------------------------------------------------------------------------
 
     private ResponseEntity<?> accessResponse(Authentication authentication, Long id) {
-        /*if (null == authentication) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }*/
-
-        AdModel adModel = adsService.getAdsById(id);
+        AdModel adModel = adService.getAdById(id);
 
         if (adModel == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -257,7 +240,7 @@ public class AdController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ResponseWrapperAds.class)
+                                    schema = @Schema(implementation = ResponseWrapperAdsDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -273,8 +256,7 @@ public class AdController {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } else {
-            ResponseWrapperAds rs = adsService.getAdsMe(authentication.getName());
-//            List<Ads> ads = adsService.getAdsMe(authentication.getName());
+            ResponseWrapperAdsDto rs = adService.getAdsMe(authentication.getName());
             return ResponseEntity.ok(rs);
         }
     }
@@ -287,45 +269,46 @@ public class AdController {
                             responseCode = "200",
                             description = "OK",
                             content = @Content(
-                                    mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Byte.class))
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = AdDto.class)
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
                             content = @Content()
                     )
             }
     )
     @SneakyThrows
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateAdsImage(@PathVariable int id,
-                                            @RequestPart("image") MultipartFile imageFile,
-                                            Authentication authentication) {
-/*        if (null == authentication) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }*/
-        ImageModel image = imageService.upload(imageFile);
-        AdModel ads = adsService.getAdsById(id);
-        return ResponseEntity.ok(adsService.updateAdsImage(ads, image).getImage().getImage());
-    }
-    /*@PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateAdsImage(@PathVariable int id, @RequestPart MultipartFile image, Authentication authentication) {
-        if (null == authentication) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> updateAdImage(@PathVariable Long id,
+                                           @RequestPart("image") MultipartFile imageFile,
+                                           Authentication authentication) {
+    
+        ResponseEntity<?> response = accessResponse(authentication, id);
+    
+        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } else {
+            ImageModel image = imageService.upload(imageFile);
+            AdModel ads = adService.getAdById(id);
+            return ResponseEntity.ok(adService.updateAdImage(ads, image).getImage().getImage());
         }
 
-        adsService.updateAdsImage(id, image);
-        return ResponseEntity.ok(null);
-    }*/
+    }
 
     // Поиск объявлений по подстроке в title с IgnoreCase
     // Параметр подстроки передается из формы фронтенд части, поэтому в будущем, @PathVariable скорее всего поменяется
     @GetMapping("/findbytitle/{searchTitle}")
     public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
         return ResponseEntity.ok(
-                adsService.findByTitleContainingIgnoreCase(searchTitle)
+                adService.findByTitleContainingIgnoreCase(searchTitle)
         );
     }
 

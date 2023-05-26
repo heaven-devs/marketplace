@@ -2,7 +2,7 @@ package ga.heaven.marketplace.controller;
 
 import ga.heaven.marketplace.dto.CommentDto;
 import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
-import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
+import ga.heaven.marketplace.dto.ResponseWrapperCommentsDto;
 import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.service.CommentService;
 import ga.heaven.marketplace.service.UserService;
@@ -40,7 +40,7 @@ public class CommentController {
                             description = "OK",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ResponseWrapperCommentDto.class)
+                                    schema = @Schema(implementation = ResponseWrapperCommentsDto.class)
                             )
                     ),
                     @ApiResponse(

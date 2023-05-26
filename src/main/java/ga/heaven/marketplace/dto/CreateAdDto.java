@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class CreateAdDto {
     private String description; // описание объявления
-    private int price;          // цена объявления
+    private Integer price;          // цена объявления
     private String title;       // заголовок объявления
 }
