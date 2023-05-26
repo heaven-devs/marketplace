@@ -1,9 +1,9 @@
 package ga.heaven.marketplace.mapper;
 
-import ga.heaven.marketplace.dto.Ads;
-import ga.heaven.marketplace.dto.CreateAds;
+import ga.heaven.marketplace.dto.AdDto;
+import ga.heaven.marketplace.dto.CreateAdDto;
 import ga.heaven.marketplace.dto.FullAdds;
-import ga.heaven.marketplace.model.AdsModel;
+import ga.heaven.marketplace.model.AdModel;
 import org.springframework.stereotype.Component;
 
 //@Mapper
@@ -16,50 +16,50 @@ public class AdsMapper {
     @Mapping(target = "author", expression = "java(this.getUser().getId())")
     Ads adsModelToAds(AdsModel adsModel);*/
 
-    public Ads adsModelToAds(AdsModel adsModel){
-        Ads ads = new Ads();
-        ads.setAuthor(adsModel.getUser().getId());
+    public AdDto adsModelToAds(AdModel adModel){
+        AdDto adDto = new AdDto();
+        adDto.setAuthor(adModel.getUser().getId());
         //ads.setImage(null);
-        ads.setImage(adsModel.getImage().getPath());
-        ads.setPk(adsModel.getId());
-        ads.setPrice(adsModel.getPrice());
-        ads.setTitle(adsModel.getTitle());
+        adDto.setImage(adModel.getImage().getPath());
+        adDto.setPk(adModel.getId());
+        adDto.setPrice(adModel.getPrice());
+        adDto.setTitle(adModel.getTitle());
         //ads.setContentType(adsModel.getContentType());
-        return ads;
+        return adDto;
     }
 
-    public FullAdds adsModelToFullAdds(AdsModel adsModel) {
-        if (adsModel == null) {
+    public FullAdds adsModelToFullAdds(AdModel adModel) {
+        if (adModel == null) {
             return null;
         }
         FullAdds fullAdds = new FullAdds();
-        fullAdds.setPk(adsModel.getId());
-        fullAdds.setAuthorFirstName(adsModel.getUser().getFirstName());
-        fullAdds.setAuthorLastName(adsModel.getUser().getLastName());
-        fullAdds.setDescription(adsModel.getDescription());
-        fullAdds.setEmail(adsModel.getUser().getUsername());
-        fullAdds.setImage(adsModel.getImage().getPath());
-        fullAdds.setPhone(adsModel.getUser().getPhone());
-        fullAdds.setPrice((adsModel.getPrice()));
-        fullAdds.setTitle(adsModel.getTitle());
+        fullAdds.setPk(adModel.getId());
+        fullAdds.setAuthorFirstName(adModel.getUser().getFirstName());
+        fullAdds.setAuthorLastName(adModel.getUser().getLastName());
+        fullAdds.setDescription(adModel.getDescription());
+        fullAdds.setEmail(adModel.getUser().getUsername());
+        fullAdds.setImage(adModel.getImage().getPath());
+        fullAdds.setPhone(adModel.getUser().getPhone());
+        fullAdds.setPrice((adModel.getPrice()));
+        fullAdds.setTitle(adModel.getTitle());
         return fullAdds;
     }
 
-    public AdsModel CreateAdsToAdsModel(CreateAds createAds) {
-        if (createAds == null) {
+    public AdModel CreateAdsToAdsModel(CreateAdDto createAdDto) {
+        if (createAdDto == null) {
             throw new RuntimeException("Неясно что делать, если createAds == null");
         }
-        AdsModel adsModel = new AdsModel();
-        adsModel.setDescription(createAds.getDescription());
-        adsModel.setPrice(createAds.getPrice());
-        adsModel.setTitle(createAds.getTitle());
-        return adsModel;
+        AdModel adModel = new AdModel();
+        adModel.setDescription(createAdDto.getDescription());
+        adModel.setPrice(createAdDto.getPrice());
+        adModel.setTitle(createAdDto.getTitle());
+        return adModel;
     }
 
-    public AdsModel CreateAdsToAdsModel(AdsModel adsModel, CreateAds createAds){
-        adsModel.setDescription(createAds.getDescription());
-        adsModel.setPrice(createAds.getPrice());
-        adsModel.setTitle(createAds.getTitle());
-        return adsModel;
+    public AdModel CreateAdsToAdsModel(AdModel adModel, CreateAdDto createAdDto){
+        adModel.setDescription(createAdDto.getDescription());
+        adModel.setPrice(createAdDto.getPrice());
+        adModel.setTitle(createAdDto.getTitle());
+        return adModel;
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,11 +54,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto loadUserImage(UserModel authUser, ImageModel image) {
-        authUser.setImage(image);
-        //authUser.setContentType(image.getContentType());
-        repository.save(authUser);
-        return mapper.mapToUserDto(authUser);
+    public UserDto loadUserImage(UserModel userModel, ImageModel image) {
+        image.setId(Optional.ofNullable(userModel.getImage())
+                .map(ImageModel::getId)
+                .orElse(null));
+        userModel.setImage(image);
+        //userModel.setContentType(image.getContentType());
+        repository.save(userModel);
+        return mapper.mapToUserDto(userModel);
     }
 
     @Override

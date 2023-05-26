@@ -19,9 +19,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static ga.heaven.marketplace.config.Constants.*;
+
 @CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RestController
-@RequestMapping("/users")
+@RequestMapping(USER_RM)
 public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 

@@ -22,7 +22,7 @@ public class CommentModel {
     private UserModel user;
     @ManyToOne
     @JoinColumn(name = "ads_id")
-    private AdsModel ads;
+    private AdModel ads;
     private LocalDateTime createdAt;
     private String text;
     

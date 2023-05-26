@@ -47,3 +47,4 @@ build/
 /src/main/resources/db/marketplace.heaven.db.trace.db
 /src/main/resources/db/marketplace.heaven.db.mv.db
 /set-upstream.sh
+/src/main/resources/db/marketplace.heaven.db.lock.db

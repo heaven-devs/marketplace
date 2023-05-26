@@ -5,7 +5,7 @@ import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
 import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
 import ga.heaven.marketplace.mapper.CommentMapper;
 import ga.heaven.marketplace.mapper.UserMapper;
-import ga.heaven.marketplace.model.AdsModel;
+import ga.heaven.marketplace.model.AdModel;
 import ga.heaven.marketplace.model.CommentModel;
 import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.repository.AdsRepository;
@@ -60,13 +60,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto addComment(RequestWrapperCommentDto rq) {
         Long adId = commentMapper.adIdFromRequestWrapperDto(rq);
-        Optional<AdsModel> adModelOptional =
+        Optional<AdModel> adModelOptional =
                 adRepository.findById(adId);
         if (adModelOptional.isEmpty()) {
             return null;
         }
         UserModel userModel = userService.getUser(rq.getUsername());
-//        UserModel userModel = userMapper.mapUserDtoToUserModel(userService.getCurrentUser());
         CommentModel commentModel = commentMapper.commentModelFromRequestWrapperDto(rq);
         commentModel.setCreatedAt(LocalDateTime.now());
         commentModel.setUser(userModel);
@@ -101,6 +100,7 @@ public class CommentServiceImpl implements CommentService {
         }
         return commentModel.getUser().getUsername().equals(rq.getUsername());
     }
+    
     
     @Override
     public CommentDto deleteComment(RequestWrapperCommentDto rq) {
