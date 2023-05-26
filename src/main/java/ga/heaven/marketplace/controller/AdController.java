@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -286,6 +287,7 @@ public class AdController {
             }
     )
     @SneakyThrows
+    @Transactional
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAdImage(@PathVariable Long id,
                                            @RequestPart("image") MultipartFile imageFile,
@@ -296,11 +298,33 @@ public class AdController {
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            ImageModel image = imageService.upload(imageFile);
-            AdModel ads = adService.getAdById(id);
-            return ResponseEntity.ok(adService.updateAdImage(ads, image).getImage().getImage());
+            ImageModel imageModel = imageService.upload(imageFile);
+            
+            AdModel adModel = adService.getAdById(id);
+            
+            //return ResponseEntity.ok(adService.updateAdImage(adModel, imageModel).getImage().getImage());
+    
+            if (null != imageModel) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.parseMediaType(imageModel.getMediaType()));
+                headers.setContentLength(imageModel.getSize());
+                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(adService.updateAdImage(adModel, imageModel).getImage().getImage());
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).build();
+            }
         }
-
+    
+    
+    
+    
+        
+        
+        
+        
+        
+        
+        
+        
     }
 
     // Поиск объявлений по подстроке в title с IgnoreCase

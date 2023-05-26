@@ -49,12 +49,12 @@ public class ImageController {
     )
     @GetMapping("{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
-        ImageModel img = imageService.read(id);
-        if (null != img) {
+        ImageModel imageModel = imageService.read(id);
+        if (null != imageModel) {
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(img.getMediaType()));
-            headers.setContentLength(img.getSize());
-            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(img.getImage());
+            headers.setContentType(MediaType.parseMediaType(imageModel.getMediaType()));
+            headers.setContentLength(imageModel.getSize());
+            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(imageModel.getImage());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

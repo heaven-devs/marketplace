@@ -143,6 +143,7 @@ public class UserController {
     public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image, Authentication authentication) {
         UserModel authUser = userService.getUser(authentication.getName());
         UserDto userDto = userService.loadUserImage(authUser, imageService.upload(image));
-        return ResponseEntity.ok(userDto);
+        //return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok().build();
     }
 }
