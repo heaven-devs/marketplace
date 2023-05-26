@@ -1,6 +1,6 @@
 package ga.heaven.marketplace.controller;
 
-import ga.heaven.marketplace.dto.NewPassword;
+import ga.heaven.marketplace.dto.NewPasswordDto;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.model.UserModel;
 import ga.heaven.marketplace.service.ImageService;
@@ -108,13 +108,13 @@ public class UserController {
             }
     )
     @PostMapping("/set_password")
-    public ResponseEntity<?> setUserPassword(@RequestBody NewPassword newPassword, Authentication authentication) {
+    public ResponseEntity<?> setUserPassword(@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
         UserModel user = userService.getUser(authentication.getName());
-        if (!userService.isPasswordCorrect(user, newPassword.currentPassword)) {
+        if (!userService.isPasswordCorrect(user, newPasswordDto.currentPassword)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        UserDto modifiedUserDto = userService.setUserPassword(user, newPassword);
+        UserDto modifiedUserDto = userService.setUserPassword(user, newPasswordDto);
         return ResponseEntity.ok(modifiedUserDto);
     }
 

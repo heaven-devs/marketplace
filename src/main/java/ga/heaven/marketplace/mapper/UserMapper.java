@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.mapper;
 
-import ga.heaven.marketplace.dto.LoginReq;
-import ga.heaven.marketplace.dto.RegisterReq;
+import ga.heaven.marketplace.dto.LoginReqDto;
+import ga.heaven.marketplace.dto.RegisterReqDto;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.model.ImageModel;
 import ga.heaven.marketplace.model.UserModel;
@@ -38,37 +38,37 @@ public class UserMapper {
         return userModel;
     }
 
-    public RegisterReq mapToRegisterReq(UserModel userModel) {
-        RegisterReq registerReq = new RegisterReq();
-        registerReq.setUsername(userModel.getUsername());
-        registerReq.setPassword(userModel.getPassword());
-        registerReq.setFirstName(userModel.getFirstName());
-        registerReq.setLastName(userModel.getLastName());
-        registerReq.setPhone(userModel.getPhone());
-        registerReq.setRole(userModel.getRole());
-        return registerReq;
+    public RegisterReqDto mapToRegisterReq(UserModel userModel) {
+        RegisterReqDto registerReqDto = new RegisterReqDto();
+        registerReqDto.setUsername(userModel.getUsername());
+        registerReqDto.setPassword(userModel.getPassword());
+        registerReqDto.setFirstName(userModel.getFirstName());
+        registerReqDto.setLastName(userModel.getLastName());
+        registerReqDto.setPhone(userModel.getPhone());
+        registerReqDto.setRole(userModel.getRole());
+        return registerReqDto;
     }
 
-    public UserModel mapRegisterReqToUserModel(RegisterReq registerReq, UserModel userModel) {
-        userModel.setUsername(registerReq.getUsername());
-        userModel.setPassword(registerReq.getPassword());
-        userModel.setFirstName(registerReq.getFirstName());
-        userModel.setLastName(registerReq.getLastName());
-        userModel.setPhone(registerReq.getPhone());
-        userModel.setRole(registerReq.getRole());
+    public UserModel mapRegisterReqToUserModel(RegisterReqDto registerReqDto, UserModel userModel) {
+        userModel.setUsername(registerReqDto.getUsername());
+        userModel.setPassword(registerReqDto.getPassword());
+        userModel.setFirstName(registerReqDto.getFirstName());
+        userModel.setLastName(registerReqDto.getLastName());
+        userModel.setPhone(registerReqDto.getPhone());
+        userModel.setRole(registerReqDto.getRole());
         return userModel;
     }
 
-    public LoginReq mapToUserModel(UserModel userModel) {
-        LoginReq loginReq = new LoginReq();
-        loginReq.setUsername(userModel.getUsername());
-        loginReq.setPassword(userModel.getPassword());
-        return loginReq;
+    public LoginReqDto mapToUserModel(UserModel userModel) {
+        LoginReqDto loginReqDto = new LoginReqDto();
+        loginReqDto.setUsername(userModel.getUsername());
+        loginReqDto.setPassword(userModel.getPassword());
+        return loginReqDto;
     }
 
-    public UserModel mapLoginReqToUserModel(LoginReq loginReq, UserModel userModel) {
-        userModel.setUsername(loginReq.getUsername());
-        userModel.setPassword(loginReq.getPassword());
+    public UserModel mapLoginReqToUserModel(LoginReqDto loginReqDto, UserModel userModel) {
+        userModel.setUsername(loginReqDto.getUsername());
+        userModel.setPassword(loginReqDto.getPassword());
         return userModel;
     }
 }

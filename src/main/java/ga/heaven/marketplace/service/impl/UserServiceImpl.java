@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.service.impl;
 
-import ga.heaven.marketplace.dto.NewPassword;
-import ga.heaven.marketplace.dto.RegisterReq;
+import ga.heaven.marketplace.dto.NewPasswordDto;
+import ga.heaven.marketplace.dto.RegisterReqDto;
 import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.mapper.UserMapper;
@@ -11,7 +11,6 @@ import ga.heaven.marketplace.repository.UserRepository;
 import ga.heaven.marketplace.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -47,8 +46,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto setUserPassword(UserModel authUser, NewPassword newPassword) {
-        authUser.setPassword(passwordEncoder.encode(newPassword.newPassword));
+    public UserDto setUserPassword(UserModel authUser, NewPasswordDto newPasswordDto) {
+        authUser.setPassword(passwordEncoder.encode(newPasswordDto.newPassword));
         repository.save(authUser);
         return mapper.mapToUserDto(authUser);
     }
@@ -70,9 +69,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(RegisterReq registerReq, Role role) {
-        UserModel userModel = mapper.mapRegisterReqToUserModel(registerReq, new UserModel());
-        userModel.setPassword(passwordEncoder.encode(registerReq.getPassword()));
+    public void createUser(RegisterReqDto registerReqDto, Role role) {
+        UserModel userModel = mapper.mapRegisterReqToUserModel(registerReqDto, new UserModel());
+        userModel.setPassword(passwordEncoder.encode(registerReqDto.getPassword()));
         userModel.setRole(Objects.requireNonNullElse(role, Role.USER));
         repository.save(userModel);
     }

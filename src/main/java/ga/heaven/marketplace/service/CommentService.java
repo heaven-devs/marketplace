@@ -2,10 +2,10 @@ package ga.heaven.marketplace.service;
 
 import ga.heaven.marketplace.dto.CommentDto;
 import ga.heaven.marketplace.dto.RequestWrapperCommentDto;
-import ga.heaven.marketplace.dto.ResponseWrapperCommentDto;
+import ga.heaven.marketplace.dto.ResponseWrapperCommentsDto;
 
 public interface CommentService {
-    ResponseWrapperCommentDto getComments(RequestWrapperCommentDto rq);
+    ResponseWrapperCommentsDto getComments(RequestWrapperCommentDto rq);
     
     CommentDto addComment(RequestWrapperCommentDto rq);
     

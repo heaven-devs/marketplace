@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 //@Repository
-public interface AdsRepository extends JpaRepository<AdModel, Long> {
+public interface AdRepository extends JpaRepository<AdModel, Long> {
     List<AdModel> findByTitleLike(String s);
 
     List<AdModel> findAdsModelByUserId(Long id);
