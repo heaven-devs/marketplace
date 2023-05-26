@@ -82,6 +82,9 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<?> updateUser(@RequestBody UserDto userDto, Authentication authentication) {
         UserModel authUser = userService.getUser(authentication.getName());
+        if (userDto.getId() != authUser.getId()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         userService.updateUser(authUser, userDto);
         return ResponseEntity.ok(userDto);
     }
@@ -110,6 +113,7 @@ public class UserController {
     @PostMapping("/set_password")
     public ResponseEntity<?> setUserPassword(@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
         UserModel user = userService.getUser(authentication.getName());
+
         if (!userService.isPasswordCorrect(user, newPasswordDto.currentPassword)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
