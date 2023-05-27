@@ -1,6 +1,5 @@
 package ga.heaven.marketplace.mapper;
 
-import ga.heaven.marketplace.dto.LoginReqDto;
 import ga.heaven.marketplace.dto.RegisterReqDto;
 import ga.heaven.marketplace.dto.UserDto;
 import ga.heaven.marketplace.model.ImageModel;
