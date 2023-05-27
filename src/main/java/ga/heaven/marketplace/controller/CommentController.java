@@ -51,8 +51,7 @@ public class CommentController {
             }
     )
     @GetMapping("{id}/comments")
-    public ResponseEntity<?> getComments(@PathVariable Integer id, Authentication authentication) {
-        //checkAuth(authentication);
+    public ResponseEntity<?> getComments(@PathVariable Integer id) {
         return ResponseEntity.ok(commentService.getComments(rq().setAdId(id)));
     }
     
@@ -120,7 +119,7 @@ public class CommentController {
                 .setUsername(authentication.getName());
         comment = commentService.isMine(rq) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.deleteComment(rq) : null;
         checkResult(comment);
-        return ResponseEntity.ok(comment);
+        return ResponseEntity.ok().build();
     }
     
     @Operation(

@@ -19,22 +19,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
+
 import static ga.heaven.marketplace.config.Constants.*;
 
-@CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
+@CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
 @RestController
 @RequestMapping(USER_RM)
 public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
+    
     private final UserService userService;
     private final ImageService imageService;
-
+    
     public UserController(UserService userService, ImageService imageService) {
         this.userService = userService;
         this.imageService = imageService;
     }
-
+    
     @Operation(
             tags = "Пользователи",
             summary = "Получить информацию об авторизованном пользователе",
@@ -59,7 +61,7 @@ public class UserController {
         UserDto authUser = userService.getCurrentUser(authentication.getName());
         return ResponseEntity.ok(authUser);
     }
-
+    
     @Operation(
             tags = "Пользователи",
             summary = "Обновить информацию об авторизованном пользователе",
@@ -88,7 +90,7 @@ public class UserController {
         userService.updateUser(authUser, userDto);
         return ResponseEntity.ok(userDto);
     }
-
+    
     @Operation(
             tags = "Пользователи",
             summary = "Обновление пароля",
@@ -113,15 +115,15 @@ public class UserController {
     @PostMapping("/set_password")
     public ResponseEntity<?> setUserPassword(@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
         UserModel user = userService.getUser(authentication.getName());
-
+        
         if (!userService.isPasswordCorrect(user, newPasswordDto.currentPassword)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
+        
         UserDto modifiedUserDto = userService.setUserPassword(user, newPasswordDto);
         return ResponseEntity.ok(modifiedUserDto);
     }
-
+    
     @Operation(
             tags = "Пользователи",
             summary = "Обновить аватар авторизованного пользователя",
@@ -139,10 +141,11 @@ public class UserController {
             }
     )
     @SneakyThrows
-    @PatchMapping("/me/image")
-    public ResponseEntity<?> loadUserImage(@RequestPart MultipartFile image, Authentication authentication) {
+    @Transactional
+    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> loadUserImage(@RequestPart("image") MultipartFile image, Authentication authentication) {
         UserModel authUser = userService.getUser(authentication.getName());
-        UserDto userDto = userService.loadUserImage(authUser, imageService.upload(image));
+        UserDto userDto = userService.loadUserImage(authUser, imageService.upload(image, OPTIMIZED_AVA_IMAGE_WIDTH));
         //return ResponseEntity.ok(userDto);
         return ResponseEntity.ok().build();
     }

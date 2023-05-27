@@ -18,7 +18,7 @@ public interface AdService {
      * @param image picture with ad image
      * @param userName ad creator username
      */
-    AdDto addAds(CreateAdDto properties, ImageModel image, String userName);
+    AdDto createAd(CreateAdDto properties, ImageModel image, String userName);
 
     /**
      * Get full information about ad

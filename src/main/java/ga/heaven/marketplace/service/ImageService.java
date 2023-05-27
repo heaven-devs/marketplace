@@ -10,10 +10,11 @@ public interface ImageService {
     /**
      * Saving an image to the database
      *
-     * @param imageFile
+     * @param imageFile multipart image file
+     * @param newWidth optimized image to this value
      * @return Images image object
      */
-    ImageModel upload(MultipartFile imageFile) throws IOException;
+    ImageModel upload(MultipartFile imageFile, Float newWidth) throws IOException;
     
     ImageModel save(ImageModel image);
     

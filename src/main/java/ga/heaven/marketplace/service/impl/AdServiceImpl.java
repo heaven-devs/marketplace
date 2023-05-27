@@ -42,7 +42,7 @@ public class AdServiceImpl implements AdService {
     }
     
     @Override
-    public AdDto addAds(CreateAdDto properties, ImageModel image, String userName) {
+    public AdDto createAd(CreateAdDto properties, ImageModel image, String userName) {
         AdModel adModel = adMapper.CreateAdsToAdsModel(properties);
         adModel.setImage(image);
         adModel.setUser(userService.getUser(userName));
@@ -93,7 +93,12 @@ public class AdServiceImpl implements AdService {
     
     @Override
     public AdModel updateAdImage(AdModel ad, ImageModel image) {
-        image.setId(ad.getImage().getId());
+        image.setId(Optional.ofNullable(ad.getImage())
+                .map(ImageModel::getId)
+                .orElse(null));
+        
+        
+        //ad.getImage().getId());
         ad.setImage(image);
         return adRepository.saveAndFlush(ad);
     }

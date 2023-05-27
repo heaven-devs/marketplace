@@ -6,15 +6,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static ga.heaven.marketplace.config.Constants.*;
+import static ga.heaven.marketplace.config.Constants.IMG_RM;
 
 @RestController
 @CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
@@ -25,8 +23,6 @@ public class ImageController {
     public ImageController(ImageService imageService) {
         this.imageService = imageService;
     }
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageController.class);
     
     @Operation(
             tags = "Картинки",
@@ -52,8 +48,9 @@ public class ImageController {
         ImageModel imageModel = imageService.read(id);
         if (null != imageModel) {
             HttpHeaders headers = new HttpHeaders();
+            //headers.setContentType(MediaType.parseMediaType("img/*"));
             headers.setContentType(MediaType.parseMediaType(imageModel.getMediaType()));
-            headers.setContentLength(imageModel.getSize());
+            headers.setContentLength(imageModel.getImage().length);
             return ResponseEntity.status(HttpStatus.OK).headers(headers).body(imageModel.getImage());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

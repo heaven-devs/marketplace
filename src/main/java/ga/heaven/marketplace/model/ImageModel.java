@@ -25,7 +25,7 @@ public class ImageModel {
     @Type(type = "binary")
     private byte[] image;
     
-    private Long size;
+    //private Long size;
     
     private String mediaType;
     

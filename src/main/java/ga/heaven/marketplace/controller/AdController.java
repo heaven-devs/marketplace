@@ -7,7 +7,6 @@ import ga.heaven.marketplace.service.AdService;
 import ga.heaven.marketplace.service.ImageService;
 import ga.heaven.marketplace.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -95,14 +94,14 @@ public class AdController {
     @SneakyThrows
     @Transactional
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addAds(@RequestPart("properties") CreateAdDto properties,
-                                    @RequestPart("image") MultipartFile imageFile,
-                                    Authentication authentication) {
+    public ResponseEntity<?> createAd(@RequestPart("properties") CreateAdDto properties,
+                                      @RequestPart("image") MultipartFile imageFile,
+                                      Authentication authentication) {
     
-        ImageModel uploadedImage = imageService.upload(imageFile);
+        ImageModel uploadedImage = imageService.upload(imageFile, OPTIMIZED_AD_IMAGE_WIDTH);
         ImageModel savedImage = imageService.save(uploadedImage);
         
-        AdDto adDto = adService.addAds(properties, savedImage, authentication.getName());
+        AdDto adDto = adService.createAd(properties, savedImage, authentication.getName());
         
         return ResponseEntity.status(HttpStatus.CREATED).body(adDto);
     }
@@ -298,17 +297,18 @@ public class AdController {
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
-            ImageModel imageModel = imageService.upload(imageFile);
+            ImageModel uploadImageModel = imageService.upload(imageFile, OPTIMIZED_AD_IMAGE_WIDTH);
             
             AdModel adModel = adService.getAdById(id);
             
-            //return ResponseEntity.ok(adService.updateAdImage(adModel, imageModel).getImage().getImage());
+            //return ResponseEntity.ok(adService.updateAdImage(adModel, uploadImageModel).getImage().getImage());
     
-            if (null != imageModel) {
+            if (null != uploadImageModel) {
                 HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.parseMediaType(imageModel.getMediaType()));
-                headers.setContentLength(imageModel.getSize());
-                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(adService.updateAdImage(adModel, imageModel).getImage().getImage());
+                //headers.setContentType(MediaType.IMAGE_JPEG);
+                headers.setContentType(MediaType.parseMediaType(uploadImageModel.getMediaType()));
+                headers.setContentLength(uploadImageModel.getImage().length);
+                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(adService.updateAdImage(adModel, uploadImageModel).getImage().getImage());
             } else {
                 return ResponseEntity.status(HttpStatus.OK).build();
             }

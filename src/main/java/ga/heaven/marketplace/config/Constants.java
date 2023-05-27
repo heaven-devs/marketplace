@@ -12,5 +12,10 @@ public interface Constants {
     String USER_RM = "/users";
     
     
+    /**
+     * Settings
+     */
+    Float OPTIMIZED_AD_IMAGE_WIDTH = 400F;
+    Float OPTIMIZED_AVA_IMAGE_WIDTH = 200F;
     
 }

@@ -60,4 +60,9 @@ create table "mp_comments"
         foreign key (user_id) references "mp_users"
 );
 
+-- changeset alrepin:2
+alter table "mp_img"
+    drop column if exists "size";
 
+-- changeset alrepin:3
+drop sequence if exists "seq_users";
