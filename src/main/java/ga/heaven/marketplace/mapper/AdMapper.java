@@ -18,6 +18,11 @@ public class AdMapper {
     @Mapping(target = "author", expression = "java(this.getUser().getId())")
     Ads adsModelToAds(AdsModel adsModel);*/
 
+    /**
+     * Mapping ad model object to ad dto
+     * @param adModel initial object of type AdModel
+     * @return resulting object of type AdDto
+     */
     public AdDto adModelToAdDto(AdModel adModel){
         AdDto adDto = new AdDto();
         adDto.setAuthor(adModel.getUser().getId());
@@ -30,6 +35,11 @@ public class AdMapper {
         return adDto;
     }
 
+    /**
+     * Mapping ad model object to full ad dto
+     * @param adModel initial object of type AdModel
+     * @return resulting object of type FullAdDto
+     */
     public FullAdDto adsModelToFullAdds(AdModel adModel) {
         if (adModel == null) {
             return null;
@@ -47,6 +57,11 @@ public class AdMapper {
         return fullAdDto;
     }
 
+    /**
+     * Mapping ad dto to ad model object
+     * @param createAdDto initial object of type AdDto
+     * @return resulting object of type AdModel
+     */
     public AdModel CreateAdsToAdsModel(CreateAdDto createAdDto) {
         if (createAdDto == null) {
             throw new RuntimeException("Неясно что делать, если createAds == null");
@@ -58,16 +73,26 @@ public class AdMapper {
         return adModel;
     }
 
+    /**
+     * Mapping ad dto to ad model object
+     * @param adModel ad model for edited
+     * @param createAdDto initial object of type AdDto
+     * @return resulting object of type AdModel
+     */
     public AdModel CreateAdsToAdsModel(AdModel adModel, CreateAdDto createAdDto){
         adModel.setDescription(isNull(createAdDto.getDescription()) ? adModel.getDescription() : createAdDto.getDescription());
         adModel.setPrice(isNull(createAdDto.getPrice()) ? adModel.getPrice() : createAdDto.getPrice());
         adModel.setTitle(isNull(createAdDto.getTitle()) ? adModel.getTitle() : createAdDto.getTitle());
         return adModel;
     }
-    
+
+    /**
+     * Checked object for null
+     * @param o checked object
+     * @return true if the object being checked is null
+     */
     private Boolean isNull(Object o) {
         return Optional.ofNullable(o).isEmpty();
     }
-    
     
 }
