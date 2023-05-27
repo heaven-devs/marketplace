@@ -11,6 +11,12 @@ import java.util.Optional;
 
 @Component
 public class UserMapper {
+
+    /**
+     * Mapping user model to user dto
+     * @param userModel original model
+     * @return resulting user dto
+     */
     public UserDto mapToUserDto(UserModel userModel) {
         UserDto dto = new UserDto();
         dto.setId(userModel.getId());
@@ -23,32 +29,28 @@ public class UserMapper {
                 .orElse(null));
         return dto;
     }
-    
-    public UserModel mapUserDtoToUserModel(UserDto userDto) {
-        return mapUserDtoToUserModel(userDto, new UserModel());
-    }
-    
+
+    /**
+     * Mapping user dto to user model
+     * @param userDto original dto
+     * @param userModel user model template
+     * @return resulting user model
+     */
     public UserModel mapUserDtoToUserModel(UserDto userDto, UserModel userModel) {
         userModel.setId(userDto.getId());
         userModel.setUsername(userDto.getEmail());
         userModel.setFirstName(userDto.getFirstName());
         userModel.setLastName(userDto.getLastName());
         userModel.setPhone(userDto.getPhone());
-        //userModel.setImage(userDto.getImage());
         return userModel;
     }
 
-    public RegisterReqDto mapToRegisterReq(UserModel userModel) {
-        RegisterReqDto registerReqDto = new RegisterReqDto();
-        registerReqDto.setUsername(userModel.getUsername());
-        registerReqDto.setPassword(userModel.getPassword());
-        registerReqDto.setFirstName(userModel.getFirstName());
-        registerReqDto.setLastName(userModel.getLastName());
-        registerReqDto.setPhone(userModel.getPhone());
-        registerReqDto.setRole(userModel.getRole());
-        return registerReqDto;
-    }
-
+    /**
+     * Mapping registerReqDto to user model
+     * @param registerReqDto original dto
+     * @param userModel user model template
+     * @return resulting user model
+     */
     public UserModel mapRegisterReqToUserModel(RegisterReqDto registerReqDto, UserModel userModel) {
         userModel.setUsername(registerReqDto.getUsername());
         userModel.setPassword(registerReqDto.getPassword());
@@ -59,16 +61,4 @@ public class UserMapper {
         return userModel;
     }
 
-    public LoginReqDto mapToUserModel(UserModel userModel) {
-        LoginReqDto loginReqDto = new LoginReqDto();
-        loginReqDto.setUsername(userModel.getUsername());
-        loginReqDto.setPassword(userModel.getPassword());
-        return loginReqDto;
-    }
-
-    public UserModel mapLoginReqToUserModel(LoginReqDto loginReqDto, UserModel userModel) {
-        userModel.setUsername(loginReqDto.getUsername());
-        userModel.setPassword(loginReqDto.getPassword());
-        return userModel;
-    }
 }
