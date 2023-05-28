@@ -37,6 +37,8 @@ public class AdController {
         this.userService = userService;
     }
     
+    // ---------------------------------------------------------------------------
+    
     @Operation(
             tags = "Объявления",
             summary = "Получить все объявления",
@@ -51,13 +53,12 @@ public class AdController {
                     )
             }
     )
-    // -------------------------------------------------------------------------
-    // РЕАЛИЗОВАНО
     @GetMapping
     public ResponseEntity<?> getAds() {
         ResponseWrapperAdsDto rs = adService.getAds();
         return ResponseEntity.ok(rs);
     }
+    
     // ---------------------------------------------------------------------------
     
     @Operation(
@@ -89,15 +90,13 @@ public class AdController {
                     )
             }
     )
-    
-    // -------------------------------------------------------------------------
     @SneakyThrows
     @Transactional
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createAd(@RequestPart("properties") CreateAdDto properties,
                                       @RequestPart("image") MultipartFile imageFile,
                                       Authentication authentication) {
-    
+        
         ImageModel uploadedImage = imageService.upload(imageFile, OPTIMIZED_AD_IMAGE_WIDTH);
         ImageModel savedImage = imageService.save(uploadedImage);
         
@@ -105,8 +104,9 @@ public class AdController {
         
         return ResponseEntity.status(HttpStatus.CREATED).body(adDto);
     }
+    
     // -------------------------------------------------------------------------
-
+    
     @Operation(
             tags = "Объявления",
             summary = "Получить информацию об объявлении",
@@ -126,20 +126,19 @@ public class AdController {
                     )
             }
     )
-    // -------------------------------------------------------------------------
-    // РЕАЛИЗОВАНО. Спринт 4
     @GetMapping("/{id}")
     public ResponseEntity<FullAdDto> getFullAd(@PathVariable long id, Authentication authentication) {
         if (null == authentication) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
+        
         FullAdDto fullAdDto = adService.getFullAd(id);
         return ResponseEntity.ok(fullAdDto);
-
+        
     }
+    
     // -------------------------------------------------------------------------
-
+    
     @Operation(
             tags = "Объявления",
             summary = "Удалить объявление",
@@ -161,13 +160,10 @@ public class AdController {
                     )
             }
     )
-
-    // -------------------------------------------------------------------------
-    //РЕАЛИЗОВАНО Спрринт4 (ПРОВЕРИТЬ УДАЛЕНИЕ, FORBIDDEN РАБОТАЕТ)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeAd(@PathVariable long id, Authentication authentication) {
         ResponseEntity<?> response = accessResponse(authentication, id);
-
+        
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
@@ -175,8 +171,9 @@ public class AdController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
     }
+    
     // -------------------------------------------------------------------------
-
+    
     @Operation(
             tags = "Объявления",
             summary = "Обновить информацию об объявлении",
@@ -201,13 +198,11 @@ public class AdController {
                     )
             }
     )
-    // -------------------------------------------------------------------------
-    // РЕАЛИЗОВАНО Спринт4
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateAd(@PathVariable long id, @RequestBody CreateAdDto createAdDto, Authentication authentication) {
-
+        
         ResponseEntity<?> response = accessResponse(authentication, id);
-
+        
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
@@ -215,22 +210,31 @@ public class AdController {
             return ResponseEntity.ok(adDto);
         }
     }
+    
     // -------------------------------------------------------------------------
-
+    
+    /**
+     * Checking authorization accesses for current authenticated user
+     *
+     * @param authentication Authentication instance
+     * @param id             ad's pk
+     * @return Spring MVC ResponseEntity return value with HttpStatus as a purpose
+     */
     private ResponseEntity<?> accessResponse(Authentication authentication, Long id) {
         AdModel adModel = adService.getAdById(id);
-
+        
         if (adModel == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }else if (adModel.getUser().getUsername().equals(authentication.getName()) ||
+        } else if (adModel.getUser().getUsername().equals(authentication.getName()) ||
                 userService.getUser(authentication.getName()).getRole() == Role.ADMIN) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
+    
     // -------------------------------------------------------------------------
-
+    
     @Operation(
             tags = "Объявления",
             summary = "Получить объявления авторизованного пользователя",
@@ -250,7 +254,7 @@ public class AdController {
                     )
             }
     )
-
+    
     @GetMapping("me")
     public ResponseEntity<?> getAdsMe(Authentication authentication) {
         if (authentication == null) {
@@ -260,7 +264,9 @@ public class AdController {
             return ResponseEntity.ok(rs);
         }
     }
-
+    
+    // -------------------------------------------------------------------------
+    
     @Operation(
             tags = "Объявления",
             summary = "Обновить картинку объявления",
@@ -291,49 +297,37 @@ public class AdController {
     public ResponseEntity<?> updateAdImage(@PathVariable Long id,
                                            @RequestPart("image") MultipartFile imageFile,
                                            Authentication authentication) {
-    
+        
         ResponseEntity<?> response = accessResponse(authentication, id);
-    
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
             ImageModel uploadImageModel = imageService.upload(imageFile, OPTIMIZED_AD_IMAGE_WIDTH);
-            
             AdModel adModel = adService.getAdById(id);
-            
-            //return ResponseEntity.ok(adService.updateAdImage(adModel, uploadImageModel).getImage().getImage());
-    
             if (null != uploadImageModel) {
                 HttpHeaders headers = new HttpHeaders();
-                //headers.setContentType(MediaType.IMAGE_JPEG);
                 headers.setContentType(MediaType.parseMediaType(uploadImageModel.getMediaType()));
                 headers.setContentLength(uploadImageModel.getImage().length);
-                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(adService.updateAdImage(adModel, uploadImageModel).getImage().getImage());
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .headers(headers)
+                        .body(adService
+                                .updateAdImage(adModel, uploadImageModel).getImage().getImage());
             } else {
                 return ResponseEntity.status(HttpStatus.OK).build();
             }
         }
-    
-    
-    
-    
-        
-        
-        
-        
-        
-        
-        
         
     }
-
+    
+    // -------------------------------------------------------------------------
+    
     // Поиск объявлений по подстроке в title с IgnoreCase
-    // Параметр подстроки передается из формы фронтенд части, поэтому в будущем, @PathVariable скорее всего поменяется
     @GetMapping("/findbytitle/{searchTitle}")
     public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
         return ResponseEntity.ok(
                 adService.findByTitleContainingIgnoreCase(searchTitle)
         );
     }
-
+    
 }
