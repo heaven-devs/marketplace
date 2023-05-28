@@ -10,9 +10,12 @@ import javax.persistence.*;
 @Data
 public class UserModel {
 
-    @Id
+    /*@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
-    @SequenceGenerator(name = "users_id_seq", sequenceName = "seq_users",  allocationSize=1)
+    @SequenceGenerator(name = "users_id_seq", sequenceName = "seq_users",  allocationSize=1)*/
+    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
     private String username;
     private String password;

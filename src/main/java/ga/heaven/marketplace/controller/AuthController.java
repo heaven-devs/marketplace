@@ -1,7 +1,7 @@
 package ga.heaven.marketplace.controller;
 
-import ga.heaven.marketplace.dto.LoginReq;
-import ga.heaven.marketplace.dto.RegisterReq;
+import ga.heaven.marketplace.dto.LoginReqDto;
+import ga.heaven.marketplace.dto.RegisterReqDto;
 import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import static ga.heaven.marketplace.config.Constants.*;
 
 @Slf4j
 @CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
@@ -50,8 +52,8 @@ public class AuthController {
                     )
             }
     )
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginReq req) {
+    @PostMapping(LOGIN_RM)
+    public ResponseEntity<?> login(@RequestBody LoginReqDto req) {
         if (authService.login(req.getUsername(), req.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
@@ -86,8 +88,8 @@ public class AuthController {
                     )
             }
     )
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterReq req) {
+    @PostMapping(REGISTER_RM)
+    public ResponseEntity<?> register(@RequestBody RegisterReqDto req) {
         Role role = req.getRole() == null ? Role.USER : req.getRole();
         if (authService.register(req, role)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();

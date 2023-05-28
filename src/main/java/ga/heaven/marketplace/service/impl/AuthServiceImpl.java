@@ -1,6 +1,6 @@
 package ga.heaven.marketplace.service.impl;
 
-import ga.heaven.marketplace.dto.RegisterReq;
+import ga.heaven.marketplace.dto.RegisterReqDto;
 import ga.heaven.marketplace.dto.Role;
 import ga.heaven.marketplace.security.UserDetailsManagerImpl;
 import ga.heaven.marketplace.service.AuthService;
@@ -33,12 +33,12 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public boolean register(RegisterReq registerReq, Role role) {
-    if (manager.userExists(registerReq.getUsername())) {
+  public boolean register(RegisterReqDto registerReqDto, Role role) {
+    if (manager.userExists(registerReqDto.getUsername())) {
       return false;
     }
 
-    service.createUser(registerReq, role);
+    service.createUser(registerReqDto, role);
     return true;
   }
 }

@@ -20,16 +20,30 @@ public class CommentMapper {
     public CommentMapper(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    
-    
+
+    /**
+     * Get ad id from RequestWrapperCommentDto
+     * @param requestWrapperCommentDto original dto
+     * @return ad id from RequestWrapperCommentDto
+     */
     public Long adIdFromRequestWrapperDto(RequestWrapperCommentDto requestWrapperCommentDto) {
         return requestWrapperCommentDto.getAdId().longValue();
     }
-    
+
+    /**
+     * Mapping RequestWrapperCommentDto to Comment model
+     * @param requestWrapperCommentDto original dto
+     * @return resulting CommentModel of type requestWrapperCommentDto
+     */
     public CommentModel commentModelFromRequestWrapperDto(RequestWrapperCommentDto requestWrapperCommentDto) {
         return mapCommentDtoToCommentModel(requestWrapperCommentDto.getData());
     }
-    
+
+    /**
+     * Mapping Comment model to Comment dto
+     * @param commentModel original model
+     * @return resulting Comment dto
+     */
     public CommentDto mapCommentModelToCommentDto(CommentModel commentModel) {
         CommentDto commentDto = new CommentDto();
         commentDto.setPk(Math.toIntExact(commentModel.getId()));
@@ -46,7 +60,12 @@ public class CommentMapper {
         commentDto.setText(commentModel.getText());
         return commentDto;
     }
-    
+
+    /**
+     * Mapping Comment dto to Comment model
+     * @param commentDto original dto
+     * @return resulting Comment model
+     */
     public CommentModel mapCommentDtoToCommentModel(CommentDto commentDto) {
         CommentModel commentModel = new CommentModel();
         if (null != commentDto.getPk()) {

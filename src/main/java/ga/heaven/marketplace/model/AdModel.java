@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name = "mp_ads")
 @Data
-public class AdsModel {
+public class AdModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;       // id объявления

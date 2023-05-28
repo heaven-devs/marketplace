@@ -1,5 +1,15 @@
 -- liquibase formatted sql
 
+-- changeset alrepin:1
+create table "mp_img"
+(
+    "id"         BIGINT auto_increment
+        primary key,
+    "image"      bytea,
+    "media_type" CHARACTER VARYING(255),
+    "size"       BIGINT
+);
+
 -- changeset starasov:1
 create table "mp_users"
 (
@@ -11,23 +21,15 @@ create table "mp_users"
     "last_name"    CHARACTER VARYING(40),
     "phone"        CHARACTER VARYING(12),
     "role"         INTEGER,
-    "img_id"       BIGINT
+    "img_id"       BIGINT,
+    constraint "users_img_id_constraint"
+        foreign key ("img_id") references "mp_img" (id) ON DELETE CASCADE
 );
 
 insert into "mp_users" ("username", "password", "first_name", "role")
 values ('admin@heaven.ga', '$2a$10$A6uOqBaRchS4bGOrCVH24.NBczBtpsPuFYvlBXGOHwNUBqZsw4Hx2', 'admin', 1); --admin
 
 CREATE SEQUENCE seq_users START WITH 1000;
-
--- changeset alrepin:1
-create table "mp_img"
-(
-    "id"         BIGINT auto_increment
-        primary key,
-    "image"      bytea,
-    "media_type" CHARACTER VARYING(255),
-    "size"       BIGINT
-);
 
 -- changeset alexTuraev:1
 create table "mp_ads"
@@ -39,9 +41,9 @@ create table "mp_ads"
     "title" CHARACTER VARYING(255),
     "img_id" BIGINT,
     "user_id" BIGINT,
-    constraint "img_id_constraint"
+    constraint "ads_img_id_constraint"
         foreign key ("img_id") references "mp_img" (id) ON DELETE CASCADE,
-    constraint "user_id_constraint"
+    constraint "ads_user_id_constraint"
         foreign key ("user_id") references "mp_users" (id) ON DELETE CASCADE
 );
 
@@ -52,10 +54,15 @@ create table "mp_comments"
     text       CHARACTER VARYING(255),
     ads_id     BIGINT,
     user_id    BIGINT,
-    constraint "FK3bcj3l17xruibbviv9g2n57s6"
+    constraint "comments_ads_id_constraint"
         foreign key (ads_id) references "mp_ads",
-    constraint "FKm1uun165bcw52vv4krmem666a"
+    constraint "comments_user_id_constraint"
         foreign key (user_id) references "mp_users"
 );
 
+-- changeset alrepin:2
+alter table "mp_img"
+    drop column if exists "size";
 
+-- changeset alrepin:3
+drop sequence if exists "seq_users";

@@ -4,7 +4,7 @@ import lombok.Data;
 
 // Объявление
 @Data
-public class Ads {
+public class AdDto {
     private long author;   // id автора объявления
     private String image; // ссылка на картинку объявления
     private long pk;       // id объявления

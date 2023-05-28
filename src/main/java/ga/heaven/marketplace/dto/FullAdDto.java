@@ -3,7 +3,7 @@ package ga.heaven.marketplace.dto;
 import lombok.Data;
 
 @Data
-public class FullAdds {
+public class FullAdDto {
     private long pk;                // id объявления
     private String authorFirstName; // имя автора объявления
     private String authorLastName;  // фамилия автора объявления

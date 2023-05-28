@@ -1,4 +1,4 @@
-package ga.heaven.marketplace.controller;
+package ga.heaven.marketplace.security;
 
 
 import org.springframework.stereotype.Component;
