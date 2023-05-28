@@ -4,16 +4,18 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
-@CrossOrigin(origins={"http://marketplace.heaven.ga", "http://localhost:3000"})
+@CrossOrigin(origins = {"http://marketplace.heaven.ga", "http://localhost:3000"})
 public class WebSecurityConfig {
-
+    
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
             "/swagger-ui.html",
@@ -21,13 +23,16 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/login",
             "/register",
-            "/ads",
+//            "/ads",
             "/img"
     };
-
+    
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .headers().frameOptions().sameOrigin()
                 .and()
                 .csrf()
@@ -36,7 +41,8 @@ public class WebSecurityConfig {
                         (authorization) ->
                                 authorization
                                         .mvcMatchers(AUTH_WHITELIST).permitAll()
-                        .mvcMatchers("/ads/**", "/users/**").authenticated()
+                                        .mvcMatchers(HttpMethod.GET, "/ads").permitAll()
+                                        .mvcMatchers("/ads/**", "/users/**").authenticated()
                 )
                 .cors()
                 .and()
@@ -44,7 +50,7 @@ public class WebSecurityConfig {
         ;
         return http.build();
     }
-
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

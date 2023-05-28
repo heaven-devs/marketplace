@@ -1,4 +1,4 @@
-package ga.heaven.marketplace;
+package ga.heaven.marketplace.config;
 
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,9 +15,9 @@ public class H2dbConfig {
     /**
      * TCP connection to connect with SQL clients to the embedded h2 database.
      *
-     * @see Server
-     * @throws SQLException if something went wrong during startup the server.
      * @return h2 db Server
+     * @throws SQLException if something went wrong during startup the server.
+     * @see Server
      */
     @Bean
 //            (initMethod = "start", destroyMethod = "stop")
